@@ -2,7 +2,7 @@
 <html lang="nl">
 <head>
 <meta charset="UTF-8">
-<title>Boef Control Dashboard</title>
+<title>Mafiaway Control System</title>
 <style>
 *{box-sizing:border-box;}
 body{margin:0;font-family:'Courier New', monospace;background:#0b1220;color:white;}
@@ -58,7 +58,7 @@ label{font-size:14px;}
 
 <div class="wrapper">
   <div class="sidebar">
-    <div class="logo">BOEF Control Dashboard</div>
+    <div class="logo">Mafiaway Control Dashboard</div>
     <div class="menu">
       <button onclick="showPage('dashboard')">Dashboard</button>
       <button onclick="showPage('loops')">Tools</button>
@@ -68,9 +68,9 @@ label{font-size:14px;}
   </div>
   <div class="main">
     <div class="header">
-      <div>Welkom bij de Boef Control Dashboard</div>
+      <div>Welkom bij de Mafiaway Control Dashboard</div>
       <span id="clock"></span>
-      <div class="money">Made by Kermit</div>
+      <div class="money">Made by Kanemori</div>
     </div>
     <div class="content">
       <!-- DASHBOARD -->
@@ -94,7 +94,7 @@ label{font-size:14px;}
         <h2>Kies een categorie</h2>
         <div id="loopCategories" class="dashboard">
           <div class="card category" onclick="showCategory('cat1')">Attack Tools</div>
-          <div class="card category" onclick="showCategory('cat2')">Kechs Tools</div>
+          <div class="card category" onclick="showCategory('cat2')">Pimp Tools</div>
           <div class="card category" onclick="showCategory('cat3')">Misdaad Tools</div>
           <div class="card category" onclick="showCategory('cat4')">Custom Tools</div>
         </div>
@@ -161,16 +161,158 @@ function showPage(id){
 // Loop data – 4 loops per categorie
 const categories={
   cat1:[
-    {name:"Attack lijst, bendes hoog inkomen.", sites:["https://boef.nl/attack/174788", "https://boef.nl/attack/174862", "https://boef.nl/attack/172719", "https://boef.nl/attack/173099", "https://boef.nl/attack/172877", "https://boef.nl/attack/159890", "https://boef.nl/attack/73062",
-		"https://boef.nl/attack/174936", "https://boef.nl/attack/174791", "https://boef.nl/attack/172637", "https://boef.nl/attack/159103", "https://boef.nl/attack/107346", "https://boef.nl/attack/164143", "https://boef.nl/attack/174968",
-		"https://boef.nl/attack/171306", "https://boef.nl/attack/174943", "https://boef.nl/attack/172252", "https://boef.nl/attack/173879", "https://boef.nl/attack/155401", "https://boef.nl/attack/174957", "https://boef.nl/attack/174664",
-		"https://boef.nl/attack/172752", "https://boef.nl/attack/172148", "https://boef.nl/attack/172736", "https://boef.nl/attack/169996", "https://boef.nl/attack/174899", "https://boef.nl/attack/172392", "https://boef.nl/attack/174758",
-		"https://boef.nl/attack/165308", "https://boef.nl/attack/171975"]},
-    {name:"Attack lijst, top 20 kechs.", sites:["https://boef.nl/attack/173099", "https://boef.nl/attack/147884", "https://boef.nl/attack/174957", "https://boef.nl/attack/174664", "https://boef.nl/attack/171384", "https://boef.nl/attack/167970", 
-		"https://boef.nl/attack/174367", "https://boef.nl/attack/161232", "https://boef.nl/attack/171228", "https://boef.nl/attack/174689", "https://boef.nl/attack/172752", "https://boef.nl/attack/174862", "https://boef.nl/attack/147886", 
-		"https://boef.nl/attack/174788", "https://boef.nl/attack/174681", "https://boef.nl/attack/172736", "https://boef.nl/attack/172877", "https://boef.nl/attack/172880", "https://boef.nl/attack/172200", "https://boef.nl/attack/173795",]},
-    {name:"Attack 200-400 x voor koffers", sites:["https://boef.nl/attack/174713","https://boef.nl/attack/174714"]},
-    {name:"Attack test MW", sites:["https://www.mafiaway.nl/attack.php?x=Clymene&valid=05aa12e9",
+    {name:"Lijst 1", sites:[  "https://www.mafiaway.nl/attack.php?x=Bastiano&valid=05aa12e9",
+  "https://www.mafiaway.nl/attack.php?x=Pondhoofd&valid=05aa12e9",
+  "https://www.mafiaway.nl/attack.php?x=Adventador&valid=05aa12e9",
+  "https://www.mafiaway.nl/attack.php?x=Miracle&valid=05aa12e9",
+  "https://www.mafiaway.nl/attack.php?x=Tokio&valid=05aa12e9",
+  "https://www.mafiaway.nl/attack.php?x=Umitg&valid=05aa12e9",
+  "https://www.mafiaway.nl/attack.php?x=Ghostwalker&valid=05aa12e9",
+  "https://www.mafiaway.nl/attack.php?x=Itsjessie&valid=05aa12e9",
+  "https://www.mafiaway.nl/attack.php?x=Titandwarf&valid=05aa12e9",
+  "https://www.mafiaway.nl/attack.php?x=Sennal&valid=05aa12e9",
+  "https://www.mafiaway.nl/attack.php?x=Misterdvs&valid=05aa12e9",
+  "https://www.mafiaway.nl/attack.php?x=Pikminn&valid=05aa12e9",
+  "https://www.mafiaway.nl/attack.php?x=Darksweetness&valid=05aa12e9",
+  "https://www.mafiaway.nl/attack.php?x=Squall&valid=05aa12e9",
+  "https://www.mafiaway.nl/attack.php?x=Knieperd&valid=05aa12e9",
+  "https://www.mafiaway.nl/attack.php?x=Frontal&valid=05aa12e9",
+  "https://www.mafiaway.nl/attack.php?x=Spaghetti&valid=05aa12e9",
+  "https://www.mafiaway.nl/attack.php?x=Acha&valid=05aa12e9",
+  "https://www.mafiaway.nl/attack.php?x=Barregaander&valid=05aa12e9",
+  "https://www.mafiaway.nl/attack.php?x=Fring&valid=05aa12e9",
+  "https://www.mafiaway.nl/attack.php?x=Bergsestrijders&valid=05aa12e9",
+  "https://www.mafiaway.nl/attack.php?x=Deadshot&valid=05aa12e9",
+  "https://www.mafiaway.nl/attack.php?x=Arkan&valid=05aa12e9",
+  "https://www.mafiaway.nl/attack.php?x=Failprofessor&valid=05aa12e9",
+  "https://www.mafiaway.nl/attack.php?x=Demie&valid=05aa12e9",
+  "https://www.mafiaway.nl/attack.php?x=Lammefrans&valid=05aa12e9",
+  "https://www.mafiaway.nl/attack.php?x=Zackink&valid=05aa12e9",
+  "https://www.mafiaway.nl/attack.php?x=Pip&valid=05aa12e9",
+  "https://www.mafiaway.nl/attack.php?x=Beautifly&valid=05aa12e9",
+  "https://www.mafiaway.nl/attack.php?x=Kurze&valid=05aa12e9",
+  "https://www.mafiaway.nl/attack.php?x=Bigidagoe&valid=05aa12e9",
+  "https://www.mafiaway.nl/attack.php?x=Jawbone&valid=05aa12e9",
+  "https://www.mafiaway.nl/attack.php?x=Rikkieej&valid=05aa12e9",
+  "https://www.mafiaway.nl/attack.php?x=Angelicaos&valid=05aa12e9",
+  "https://www.mafiaway.nl/attack.php?x=Donimperiale&valid=05aa12e9",
+  "https://www.mafiaway.nl/attack.php?x=Soep&valid=05aa12e9",
+  "https://www.mafiaway.nl/attack.php?x=Dastixy&valid=05aa12e9",
+  "https://www.mafiaway.nl/attack.php?x=Coentjuhh&valid=05aa12e9",
+  "https://www.mafiaway.nl/attack.php?x=Sylvionl&valid=05aa12e9",
+  "https://www.mafiaway.nl/attack.php?x=Ciskederat&valid=05aa12e9",
+  "https://www.mafiaway.nl/attack.php?x=Bordobereli&valid=05aa12e9",
+  "https://www.mafiaway.nl/attack.php?x=Iamflip&valid=05aa12e9",
+  "https://www.mafiaway.nl/attack.php?x=Eminam&valid=05aa12e9",
+  "https://www.mafiaway.nl/attack.php?x=Dellemino&valid=05aa12e9",
+  "https://www.mafiaway.nl/attack.php?x=Opjutter&valid=05aa12e9",
+  "https://www.mafiaway.nl/attack.php?x=Rae&valid=05aa12e9",
+  "https://www.mafiaway.nl/attack.php?x=Wentelteef&valid=05aa12e9",
+  "https://www.mafiaway.nl/attack.php?x=Miginl&valid=05aa12e9",
+  "https://www.mafiaway.nl/attack.php?x=Koekkievos&valid=05aa12e9",
+  "https://www.mafiaway.nl/attack.php?x=Igris&valid=05aa12e9",
+  "https://www.mafiaway.nl/attack.php?x=Donbrisket&valid=05aa12e9",
+  "https://www.mafiaway.nl/attack.php?x=Gucci&valid=05aa12e9",
+  "https://www.mafiaway.nl/attack.php?x=Granny&valid=05aa12e9",
+  "https://www.mafiaway.nl/attack.php?x=Tranquille&valid=05aa12e9",
+  "https://www.mafiaway.nl/attack.php?x=Assebian&valid=05aa12e9",
+  "https://www.mafiaway.nl/attack.php?x=Maffedoos&valid=05aa12e9",
+  "https://www.mafiaway.nl/attack.php?x=Aronhafc&valid=05aa12e9",
+  "https://www.mafiaway.nl/attack.php?x=Knaller&valid=05aa12e9",
+  "https://www.mafiaway.nl/attack.php?x=Adonulzeventig&valid=05aa12e9",
+  "https://www.mafiaway.nl/attack.php?x=Kleinetijger&valid=05aa12e9",
+  "https://www.mafiaway.nl/attack.php?x=Ash&valid=05aa12e9",
+  "https://www.mafiaway.nl/attack.php?x=Validious&valid=05aa12e9",
+  "https://www.mafiaway.nl/attack.php?x=Davian&valid=05aa12e9",
+  "https://www.mafiaway.nl/attack.php?x=Murfienl&valid=05aa12e9",
+  "https://www.mafiaway.nl/attack.php?x=Desinteresse&valid=05aa12e9",
+  "https://www.mafiaway.nl/attack.php?x=Letsmoneytalk&valid=05aa12e9",
+  "https://www.mafiaway.nl/attack.php?x=Zeke&valid=05aa12e9",
+  "https://www.mafiaway.nl/attack.php?x=Sunshine&valid=05aa12e9",
+  "https://www.mafiaway.nl/attack.php?x=Corky&valid=05aa12e9",
+  "https://www.mafiaway.nl/attack.php?x=Locodevil&valid=05aa12e9",
+  "https://www.mafiaway.nl/attack.php?x=Tehpirateslife&valid=05aa12e9",
+  "https://www.mafiaway.nl/attack.php?x=Goentje&valid=05aa12e9",
+  "https://www.mafiaway.nl/attack.php?x=Sinitboy ster&valid=05aa12e9",
+  "https://www.mafiaway.nl/attack.php?x=Melisster&valid=05aa12e9",
+  "https://www.mafiaway.nl/attack.php?x=Mystic&valid=05aa12e9",
+  "https://www.mafiaway.nl/attack.php?x=Gerritkiller&valid=05aa12e9",
+  "https://www.mafiaway.nl/attack.php?x=Octopusprime&valid=05aa12e9",
+  "https://www.mafiaway.nl/attack.php?x=Joodje&valid=05aa12e9",
+  "https://www.mafiaway.nl/attack.php?x=Virtuoso&valid=05aa12e9",
+  "https://www.mafiaway.nl/attack.php?x=Erzo&valid=05aa12e9",
+  "https://www.mafiaway.nl/attack.php?x=Mandalorian ster&valid=05aa12e9",
+  "https://www.mafiaway.nl/attack.php?x=Dutchviking&valid=05aa12e9",
+  "https://www.mafiaway.nl/attack.php?x=Tastefull&valid=05aa12e9",
+  "https://www.mafiaway.nl/attack.php?x=Dampsy&valid=05aa12e9",
+  "https://www.mafiaway.nl/attack.php?x=Arcane&valid=05aa12e9",
+  "https://www.mafiaway.nl/attack.php?x=Jdgirl&valid=05aa12e9",
+  "https://www.mafiaway.nl/attack.php?x=Shattoe&valid=05aa12e9",
+  "https://www.mafiaway.nl/attack.php?x=Dutchpanda&valid=05aa12e9",
+  "https://www.mafiaway.nl/attack.php?x=Huntsman&valid=05aa12e9",
+  "https://www.mafiaway.nl/attack.php?x=Aopox&valid=05aa12e9",
+  "https://www.mafiaway.nl/attack.php?x=Divinity&valid=05aa12e9",
+  "https://www.mafiaway.nl/attack.php?x=Djgast&valid=05aa12e9",
+  "https://www.mafiaway.nl/attack.php?x=Whitesnowflake&valid=05aa12e9",
+  "https://www.mafiaway.nl/attack.php?x=Killingj&valid=05aa12e9",
+  "https://www.mafiaway.nl/attack.php?x=Lockout&valid=05aa12e9",
+  "https://www.mafiaway.nl/attack.php?x=Irradiate&valid=05aa12e9",
+  "https://www.mafiaway.nl/attack.php?x=Laetitia&valid=05aa12e9",
+  "https://www.mafiaway.nl/attack.php?x=Hosselmossel&valid=05aa12e9",
+  "https://www.mafiaway.nl/attack.php?x=Juice&valid=05aa12e9",
+  "https://www.mafiaway.nl/attack.php?x=Wesleyb&valid=05aa12e9",
+  "https://www.mafiaway.nl/attack.php?x=Kuroten&valid=05aa12e9",
+  "https://www.mafiaway.nl/attack.php?x=Epson&valid=05aa12e9",
+  "https://www.mafiaway.nl/attack.php?x=Barry&valid=05aa12e9",
+  "https://www.mafiaway.nl/attack.php?x=Gekkigheid&valid=05aa12e9",
+  "https://www.mafiaway.nl/attack.php?x=Jme&valid=05aa12e9",
+  "https://www.mafiaway.nl/attack.php?x=Soberano&valid=05aa12e9",
+  "https://www.mafiaway.nl/attack.php?x=Phantom&valid=05aa12e9",
+  "https://www.mafiaway.nl/attack.php?x=Maestro&valid=05aa12e9",
+  "https://www.mafiaway.nl/attack.php?x=Chimera&valid=05aa12e9",
+  "https://www.mafiaway.nl/attack.php?x=Seppblatter&valid=05aa12e9",
+  "https://www.mafiaway.nl/attack.php?x=Mefisto&valid=05aa12e9",
+  "https://www.mafiaway.nl/attack.php?x=Moony&valid=05aa12e9",
+  "https://www.mafiaway.nl/attack.php?x=Extasis&valid=05aa12e9",
+  "https://www.mafiaway.nl/attack.php?x=Pablooo&valid=05aa12e9",
+  "https://www.mafiaway.nl/attack.php?x=Didibeast&valid=05aa12e9",
+  "https://www.mafiaway.nl/attack.php?x=Carnefice&valid=05aa12e9",
+  "https://www.mafiaway.nl/attack.php?x=Shadowreaper&valid=05aa12e9",
+  "https://www.mafiaway.nl/attack.php?x=Itslaupau&valid=05aa12e9",
+  "https://www.mafiaway.nl/attack.php?x=Dertelll&valid=05aa12e9",
+  "https://www.mafiaway.nl/attack.php?x=Highpope&valid=05aa12e9",
+  "https://www.mafiaway.nl/attack.php?x=Kimmetjuh&valid=05aa12e9",
+  "https://www.mafiaway.nl/attack.php?x=Gerkeftw&valid=05aa12e9",
+  "https://www.mafiaway.nl/attack.php?x=Vintage&valid=05aa12e9",
+  "https://www.mafiaway.nl/attack.php?x=Angelke&valid=05aa12e9",
+  "https://www.mafiaway.nl/attack.php?x=Uncaged&valid=05aa12e9",
+  "https://www.mafiaway.nl/attack.php?x=Roylach&valid=05aa12e9",
+  "https://www.mafiaway.nl/attack.php?x=Jappie&valid=05aa12e9",
+  "https://www.mafiaway.nl/attack.php?x=Eniesee&valid=05aa12e9",
+  "https://www.mafiaway.nl/attack.php?x=Luther&valid=05aa12e9",
+  "https://www.mafiaway.nl/attack.php?x=Gangleader&valid=05aa12e9",
+  "https://www.mafiaway.nl/attack.php?x=Saayko&valid=05aa12e9",
+  "https://www.mafiaway.nl/attack.php?x=Juno&valid=05aa12e9",
+  "https://www.mafiaway.nl/attack.php?x=Misssnowy&valid=05aa12e9",
+  "https://www.mafiaway.nl/attack.php?x=Killerscar&valid=05aa12e9",
+  "https://www.mafiaway.nl/attack.php?x=Lupara&valid=05aa12e9",
+  "https://www.mafiaway.nl/attack.php?x=Reldwerg&valid=05aa12e9",
+  "https://www.mafiaway.nl/attack.php?x=Tkzone&valid=05aa12e9",
+  "https://www.mafiaway.nl/attack.php?x=Addams&valid=05aa12e9",
+  "https://www.mafiaway.nl/attack.php?x=Chocopasta&valid=05aa12e9",
+  "https://www.mafiaway.nl/attack.php?x=Aapje&valid=05aa12e9",
+  "https://www.mafiaway.nl/attack.php?x=Ronaldooke&valid=05aa12e9",
+  "https://www.mafiaway.nl/attack.php?x=Diamondbitch&valid=05aa12e9",
+  "https://www.mafiaway.nl/attack.php?x=Eminov&valid=05aa12e9",
+  "https://www.mafiaway.nl/attack.php?x=Hobbeldruif&valid=05aa12e9",
+  "https://www.mafiaway.nl/attack.php?x=Teddybigs&valid=05aa12e9",
+  "https://www.mafiaway.nl/attack.php?x=Eusebio&valid=05aa12e9",
+  "https://www.mafiaway.nl/attack.php?x=Zenn&valid=05aa12e9",
+  "https://www.mafiaway.nl/attack.php?x=Kurdonl&valid=05aa12e9",
+  "https://www.mafiaway.nl/attack.php?x=Pimdecavia&valid=05aa12e9",
+  "https://www.mafiaway.nl/attack.php?x=Ryuga&valid=05aa12e9"]},
+    {name:"Nog in te vullen 2", sites:["https://boef.nl/attack/174713","https://boef.nl/attack/174714"]},
+    {name:"Nog in te vullen 3", sites:["https://www.mafiaway.nl/attack.php?x=Clymene&valid=05aa12e9",
   "https://www.mafiaway.nl/attack.php?x=Pimdecavia&valid=05aa12e9",
   "https://www.mafiaway.nl/attack.php?x=Ikki&valid=05aa12e9",
   "https://www.mafiaway.nl/attack.php?x=Taksiii&valid=05aa12e9",
