@@ -1,885 +1,2330 @@
 <!DOCTYPE html>
 <html lang="nl">
 <head>
-<meta charset="UTF-8">
-<title>Mafiaway Control System</title>
-<style>
-*{box-sizing:border-box;}
-body{margin:0;font-family:'Courier New', monospace;background:#0b1220;color:white;}
-.wrapper{display:grid;grid-template-columns:240px 1fr;height:100vh;}
-.sidebar{background:#060c18;border-right:1px solid #1e293b;padding:20px;}
-.logo{font-size:22px;font-weight:bold;margin-bottom:30px;color:#0ff;}
-.menu button{width:100%;padding:12px;margin-bottom:8px;background:#0f172a;border:none;color:#0ff;border-radius:6px;cursor:pointer;font-weight:bold;}
-.menu button:hover{background:#1e293b;color:#22c55e;}
-.main{display:flex;flex-direction:column;height:100vh;}
-.header{background:#060c18;padding:15px 25px;border-bottom:1px solid #1e293b;display:flex;justify-content:space-between;align-items:center;font-family:'Courier New', monospace;}
-.money{color:#22c55e;font-weight:bold;}
-.content{padding:25px;overflow:auto;}
-.page{display:none;}
-.page.active{display:block;}
-.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:15px;margin-bottom:25px;}
-.stat{background:#1e293b;padding:15px;border-radius:8px;border:1px solid #22c55e;}
-.dashboard{display:grid;grid-template-columns:1fr 1fr;gap:20px;}
-.card{background:#1e293b;padding:20px;border-radius:10px;box-shadow:0 10px 20px rgba(0,0,0,0.3);}
-.card.loop:hover{transform: translateY(-5px);box-shadow:0 15px 25px rgba(0,255,255,0.5);transition: all 0.3s ease;}
-.card.category{cursor:pointer;text-align:center;padding:40px;font-size:18px;font-weight:bold;transition:all 0.3s ease;}
-.card.category:hover{background:#1e293b;transform:scale(1.05);}
-button{border:none;padding:8px 12px;border-radius:5px;cursor:pointer;margin-top:5px;}
-.start{background:#22c55e;color:white;}
-.stop{background:#ef4444;color:white;}
-.barbg{height:8px;background:#334155;border-radius:5px;margin-top:10px;}
-.bar{height:100%;width:0%;background:linear-gradient(90deg,#22c55e,#16a34a);border-radius:5px;transition:width 0.1s linear;}
-.input-block{margin-bottom:10px;background:#1e293b;padding:10px;border-radius:8px;display:flex;align-items:center;gap:10px;}
-input[type=number]{width:60px;padding:5px;border-radius:5px;border:none;background:#0f172a;color:white;text-align:center;}
-input[type=text]{width:120px;padding:5px;border-radius:5px;border:none;background:#0f172a;color:white;}
-label{font-size:14px;}
-.countdown{color:#22c55e;font-weight:bold;}
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Hondensalon Patricia – Luxe Hondenverzorging in Wieringerwaard</title>
+  <meta name="description" content="Professionele, liefdevolle verzorging voor jouw hond in een luxe omgeving. Gelegen in Wieringerwaard en omgeving." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Jost:wght@300;400;500&display=swap" rel="stylesheet" />
+  <style>
+    /* ===========================
+       CSS RESET & BASE
+    =========================== */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-/* LOGIN OVERLAY */
-#loginOverlay{
-  position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(11,18,32,0.95);display:flex;justify-content:center;align-items:center;z-index:9999;flex-direction:column;
-}
-#loginOverlay h2{color:#0ff;margin-bottom:20px;font-size:28px;}
-#loginOverlay input{padding:12px 15px;font-size:16px;border-radius:8px;border:none;margin-bottom:10px;width:250px;background:#0f172a;color:white;}
-#loginOverlay button{padding:12px 20px;font-size:16px;border-radius:8px;border:none;background:#22c55e;color:white;cursor:pointer;transition:all 0.3s;}
-#loginOverlay button:hover{background:#16a34a;}
-#loginOverlay .error{color:#ef4444;margin-top:10px;}
-</style>
+    :root {
+      --brown:       #1a0f0b;
+      --brown-mid:   #2e1a14;
+      --brown-light: #4a2c22;
+      --gold:        #d4af37;
+      --gold-light:  #e8c96a;
+      --cream:       #f5e6c8;
+      --cream-light: #fdf6ec;
+      --white:       #ffffff;
+      --text-dark:   #1a0f0b;
+      --text-mid:    #4a2c22;
+      --serif:       'Cormorant Garamond', Georgia, serif;
+      --sans:        'Jost', system-ui, sans-serif;
+      --transition:  0.3s ease;
+      --shadow:      0 8px 40px rgba(26,15,11,0.12);
+      --shadow-lg:   0 20px 60px rgba(26,15,11,0.18);
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: var(--sans);
+      font-weight: 300;
+      color: var(--text-dark);
+      background: var(--cream-light);
+      line-height: 1.7;
+      overflow-x: hidden;
+    }
+
+    img { max-width: 100%; display: block; }
+    a { text-decoration: none; color: inherit; }
+
+    /* ===========================
+       UTILITY CLASSES
+    =========================== */
+    .container {
+      width: 90%;
+      max-width: 1140px;
+      margin: 0 auto;
+    }
+
+    .section-label {
+      font-family: var(--sans);
+      font-size: 0.72rem;
+      font-weight: 500;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--gold);
+      display: block;
+      margin-bottom: 0.75rem;
+    }
+
+    .section-title {
+      font-family: var(--serif);
+      font-size: clamp(2rem, 4vw, 3rem);
+      font-weight: 400;
+      line-height: 1.2;
+      color: var(--brown);
+    }
+
+    .section-title span { color: var(--gold); font-style: italic; }
+
+    .section-sub {
+      font-size: 1rem;
+      color: var(--text-mid);
+      max-width: 540px;
+      margin-top: 1rem;
+      line-height: 1.8;
+    }
+
+    .divider {
+      width: 60px;
+      height: 2px;
+      background: var(--gold);
+      margin: 1.5rem 0;
+    }
+
+    .divider-center { margin: 1.5rem auto; }
+
+    /* ===========================
+       BUTTONS
+    =========================== */
+    .btn {
+      display: inline-block;
+      padding: 0.85rem 2.2rem;
+      font-family: var(--sans);
+      font-size: 0.8rem;
+      font-weight: 500;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      border: none;
+      cursor: pointer;
+      transition: all var(--transition);
+      text-align: center;
+    }
+
+    .btn-gold {
+      background: var(--gold);
+      color: var(--brown);
+    }
+    .btn-gold:hover {
+      background: var(--gold-light);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 24px rgba(212,175,55,0.35);
+    }
+
+    .btn-outline {
+      background: transparent;
+      color: var(--gold);
+      border: 1.5px solid var(--gold);
+    }
+    .btn-outline:hover {
+      background: var(--gold);
+      color: var(--brown);
+      transform: translateY(-2px);
+    }
+
+    .btn-outline-white {
+      background: transparent;
+      color: var(--white);
+      border: 1.5px solid rgba(255,255,255,0.6);
+    }
+    .btn-outline-white:hover {
+      background: var(--white);
+      color: var(--brown);
+    }
+
+    /* ===========================
+       NAVIGATION
+    =========================== */
+    .nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 1000;
+      padding: 1.2rem 0;
+      transition: all var(--transition);
+    }
+
+    .nav.scrolled {
+      background: var(--brown);
+      padding: 0.8rem 0;
+      box-shadow: 0 4px 30px rgba(0,0,0,0.25);
+    }
+
+    .nav-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .nav-logo {
+      display: flex;
+      flex-direction: column;
+      line-height: 1;
+    }
+
+    .nav-logo-main {
+      font-family: var(--serif);
+      font-size: 1.5rem;
+      font-weight: 600;
+      color: var(--gold);
+      letter-spacing: 0.04em;
+    }
+
+    .nav-logo-sub {
+      font-family: var(--sans);
+      font-size: 0.62rem;
+      font-weight: 400;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      color: var(--cream);
+      margin-top: 2px;
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 2.5rem;
+      list-style: none;
+    }
+
+    .nav-links a {
+      font-family: var(--sans);
+      font-size: 0.78rem;
+      font-weight: 400;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--cream);
+      transition: color var(--transition);
+      position: relative;
+    }
+
+    .nav-links a::after {
+      content: '';
+      position: absolute;
+      bottom: -4px; left: 0;
+      width: 0; height: 1px;
+      background: var(--gold);
+      transition: width var(--transition);
+    }
+
+    .nav-links a:hover { color: var(--gold); }
+    .nav-links a:hover::after { width: 100%; }
+
+    .nav-cta {
+      font-size: 0.72rem !important;
+      padding: 0.6rem 1.4rem;
+    }
+
+    /* Hamburger */
+    .hamburger {
+      display: none;
+      flex-direction: column;
+      gap: 5px;
+      cursor: pointer;
+      padding: 4px;
+    }
+    .hamburger span {
+      display: block;
+      width: 24px; height: 1.5px;
+      background: var(--cream);
+      transition: all var(--transition);
+    }
+    .hamburger.open span:nth-child(1) { transform: translateY(6.5px) rotate(45deg); }
+    .hamburger.open span:nth-child(2) { opacity: 0; }
+    .hamburger.open span:nth-child(3) { transform: translateY(-6.5px) rotate(-45deg); }
+
+    /* Mobile nav */
+    .mobile-nav {
+      display: none;
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: var(--brown);
+      z-index: 999;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 2.5rem;
+    }
+    .mobile-nav.open { display: flex; }
+    .mobile-nav a {
+      font-family: var(--serif);
+      font-size: 2rem;
+      font-weight: 400;
+      color: var(--cream);
+      letter-spacing: 0.06em;
+      transition: color var(--transition);
+    }
+    .mobile-nav a:hover { color: var(--gold); }
+
+    /* ===========================
+       HERO
+    =========================== */
+    .hero {
+      min-height: 100vh;
+      background: var(--brown);
+      position: relative;
+      display: flex;
+      align-items: center;
+      overflow: hidden;
+    }
+
+    /* Decorative background pattern */
+    .hero::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(ellipse 80% 60% at 70% 50%, rgba(212,175,55,0.08) 0%, transparent 60%),
+        radial-gradient(ellipse 50% 80% at 20% 80%, rgba(212,175,55,0.05) 0%, transparent 50%);
+    }
+
+    /* Vertical gold line accent */
+    .hero::after {
+      content: '';
+      position: absolute;
+      top: 15%; bottom: 15%;
+      left: 50%;
+      width: 1px;
+      background: linear-gradient(to bottom, transparent, rgba(212,175,55,0.3), transparent);
+    }
+
+    .hero-content {
+      position: relative;
+      z-index: 2;
+      max-width: 640px;
+    }
+
+    .hero-eyebrow {
+      font-family: var(--sans);
+      font-size: 0.7rem;
+      font-weight: 500;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 1.5rem;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .hero-eyebrow::before {
+      content: '';
+      display: inline-block;
+      width: 40px; height: 1px;
+      background: var(--gold);
+    }
+
+    .hero-title {
+      font-family: var(--serif);
+      font-size: clamp(2.8rem, 6vw, 5rem);
+      font-weight: 300;
+      line-height: 1.1;
+      color: var(--white);
+      margin-bottom: 0.5rem;
+    }
+
+    .hero-title em {
+      font-style: italic;
+      color: var(--gold);
+      font-weight: 400;
+    }
+
+    .hero-subtitle {
+      font-family: var(--serif);
+      font-size: clamp(1.1rem, 2vw, 1.4rem);
+      font-weight: 300;
+      font-style: italic;
+      color: var(--cream);
+      margin-bottom: 1.5rem;
+      opacity: 0.85;
+    }
+
+    .hero-divider {
+      width: 80px; height: 1px;
+      background: linear-gradient(to right, var(--gold), transparent);
+      margin: 1.5rem 0;
+    }
+
+    .hero-desc {
+      font-family: var(--sans);
+      font-size: 1rem;
+      font-weight: 300;
+      color: rgba(245,230,200,0.8);
+      line-height: 1.8;
+      max-width: 480px;
+      margin-bottom: 2.5rem;
+    }
+
+    .hero-btns {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .hero-scroll {
+      position: absolute;
+      bottom: 2.5rem;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.5rem;
+      color: rgba(245,230,200,0.5);
+      font-size: 0.65rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      z-index: 2;
+    }
+
+    .hero-scroll-line {
+      width: 1px; height: 50px;
+      background: linear-gradient(to bottom, rgba(212,175,55,0.6), transparent);
+      animation: scrollLine 2s ease-in-out infinite;
+    }
+
+    @keyframes scrollLine {
+      0%, 100% { transform: scaleY(1); opacity: 1; }
+      50% { transform: scaleY(0.5); opacity: 0.4; }
+    }
+
+    /* Hero image panel */
+    .hero-image-panel {
+      position: absolute;
+      right: 0; top: 0; bottom: 0;
+      width: 42%;
+      overflow: hidden;
+    }
+
+    .hero-image-panel::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to right, var(--brown) 0%, transparent 40%);
+      z-index: 1;
+    }
+
+    .hero-image-panel img {
+      width: 100%; height: 100%;
+      object-fit: cover;
+      opacity: 0.55;
+      filter: sepia(20%) saturate(0.8);
+    }
+
+    /* Floating badge */
+    .hero-badge {
+      position: absolute;
+      bottom: 3rem;
+      right: 5%;
+      background: var(--gold);
+      color: var(--brown);
+      width: 110px; height: 110px;
+      border-radius: 50%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      z-index: 3;
+      box-shadow: 0 8px 30px rgba(212,175,55,0.4);
+    }
+
+    .hero-badge-num {
+      font-family: var(--serif);
+      font-size: 1.8rem;
+      font-weight: 600;
+      line-height: 1;
+    }
+
+    .hero-badge-text {
+      font-family: var(--sans);
+      font-size: 0.55rem;
+      font-weight: 500;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      line-height: 1.3;
+      margin-top: 2px;
+    }
+
+    /* ===========================
+       INTRO STRIP
+    =========================== */
+    .intro-strip {
+      background: var(--gold);
+      padding: 1.2rem 0;
+      overflow: hidden;
+    }
+
+    .intro-strip-inner {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 3rem;
+      flex-wrap: wrap;
+    }
+
+    .intro-strip-item {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      font-family: var(--sans);
+      font-size: 0.75rem;
+      font-weight: 500;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--brown);
+    }
+
+    .intro-strip-dot {
+      width: 5px; height: 5px;
+      border-radius: 50%;
+      background: var(--brown);
+      opacity: 0.4;
+    }
+
+    /* ===========================
+       ABOUT SECTION
+    =========================== */
+    .about {
+      padding: 7rem 0;
+      background: var(--cream-light);
+    }
+
+    .about-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 5rem;
+      align-items: center;
+    }
+
+    .about-image-wrap {
+      position: relative;
+    }
+
+    .about-image-main {
+      width: 100%;
+      aspect-ratio: 4/5;
+      object-fit: cover;
+      filter: sepia(10%) saturate(0.9);
+    }
+
+    .about-image-accent {
+      position: absolute;
+      bottom: -2rem;
+      right: -2rem;
+      width: 55%;
+      aspect-ratio: 1;
+      object-fit: cover;
+      border: 6px solid var(--cream-light);
+      filter: sepia(10%) saturate(0.9);
+    }
+
+    .about-frame {
+      position: absolute;
+      top: -1.5rem; left: -1.5rem;
+      right: 2rem; bottom: 2rem;
+      border: 1.5px solid rgba(212,175,55,0.3);
+      pointer-events: none;
+    }
+
+    .about-quote {
+      margin-top: 2rem;
+      padding: 1.5rem 1.8rem;
+      background: var(--brown);
+      border-left: 3px solid var(--gold);
+    }
+
+    .about-quote p {
+      font-family: var(--serif);
+      font-size: 1.1rem;
+      font-style: italic;
+      color: var(--cream);
+      line-height: 1.7;
+    }
+
+    .about-quote cite {
+      display: block;
+      font-family: var(--sans);
+      font-size: 0.72rem;
+      font-style: normal;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-top: 0.75rem;
+    }
+
+    .about-stats {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1.5rem;
+      margin-top: 2.5rem;
+    }
+
+    .about-stat {
+      text-align: center;
+      padding: 1.2rem;
+      background: var(--cream);
+      border-bottom: 2px solid var(--gold);
+    }
+
+    .about-stat-num {
+      font-family: var(--serif);
+      font-size: 2rem;
+      font-weight: 600;
+      color: var(--gold);
+      line-height: 1;
+    }
+
+    .about-stat-label {
+      font-family: var(--sans);
+      font-size: 0.68rem;
+      font-weight: 400;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--text-mid);
+      margin-top: 0.4rem;
+    }
+
+    /* ===========================
+       SERVICES SECTION
+    =========================== */
+    .services {
+      padding: 7rem 0;
+      background: var(--brown);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .services::before {
+      content: '';
+      position: absolute;
+      top: -100px; right: -100px;
+      width: 400px; height: 400px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(212,175,55,0.06) 0%, transparent 70%);
+    }
+
+    .services-header {
+      text-align: center;
+      margin-bottom: 4rem;
+    }
+
+    .services-header .section-title { color: var(--cream); }
+    .services-header .section-sub { color: rgba(245,230,200,0.7); margin: 0 auto; text-align: center; }
+
+    .services-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1.5px;
+      background: rgba(212,175,55,0.15);
+    }
+
+    .service-card {
+      background: var(--brown-mid);
+      padding: 2.5rem 2rem;
+      transition: all var(--transition);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .service-card::before {
+      content: '';
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      height: 2px;
+      background: var(--gold);
+      transform: scaleX(0);
+      transition: transform var(--transition);
+    }
+
+    .service-card:hover { background: var(--brown-light); }
+    .service-card:hover::before { transform: scaleX(1); }
+
+    .service-icon {
+      font-size: 2rem;
+      margin-bottom: 1rem;
+      display: block;
+    }
+
+    .service-name {
+      font-family: var(--serif);
+      font-size: 1.4rem;
+      font-weight: 400;
+      color: var(--cream);
+      margin-bottom: 0.75rem;
+    }
+
+    .service-desc {
+      font-size: 0.88rem;
+      color: rgba(245,230,200,0.65);
+      line-height: 1.7;
+      margin-bottom: 1.5rem;
+    }
+
+    .service-includes {
+      list-style: none;
+      margin-bottom: 1.5rem;
+    }
+
+    .service-includes li {
+      font-size: 0.82rem;
+      color: rgba(245,230,200,0.7);
+      padding: 0.3rem 0;
+      padding-left: 1.2rem;
+      position: relative;
+    }
+
+    .service-includes li::before {
+      content: '—';
+      position: absolute;
+      left: 0;
+      color: var(--gold);
+      font-size: 0.7rem;
+    }
+
+    .service-price {
+      display: flex;
+      align-items: baseline;
+      gap: 0.3rem;
+      margin-top: auto;
+    }
+
+    .service-price-from {
+      font-size: 0.7rem;
+      color: var(--gold);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+
+    .service-price-amount {
+      font-family: var(--serif);
+      font-size: 1.8rem;
+      font-weight: 600;
+      color: var(--gold);
+    }
+
+    .service-price-note {
+      font-size: 0.7rem;
+      color: rgba(245,230,200,0.5);
+    }
+
+    .services-note {
+      text-align: center;
+      margin-top: 2.5rem;
+      font-size: 0.82rem;
+      color: rgba(245,230,200,0.5);
+      font-style: italic;
+    }
+
+    /* ===========================
+       PROCESS SECTION
+    =========================== */
+    .process {
+      padding: 7rem 0;
+      background: var(--cream);
+    }
+
+    .process-header {
+      text-align: center;
+      margin-bottom: 4rem;
+    }
+
+    .process-steps {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 0;
+      position: relative;
+    }
+
+    .process-steps::before {
+      content: '';
+      position: absolute;
+      top: 2rem;
+      left: 12.5%; right: 12.5%;
+      height: 1px;
+      background: linear-gradient(to right, transparent, var(--gold), transparent);
+    }
+
+    .process-step {
+      text-align: center;
+      padding: 0 1.5rem;
+      position: relative;
+    }
+
+    .process-num {
+      width: 4rem; height: 4rem;
+      border-radius: 50%;
+      background: var(--brown);
+      color: var(--gold);
+      font-family: var(--serif);
+      font-size: 1.3rem;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 1.5rem;
+      position: relative;
+      z-index: 1;
+    }
+
+    .process-title {
+      font-family: var(--serif);
+      font-size: 1.15rem;
+      font-weight: 500;
+      color: var(--brown);
+      margin-bottom: 0.6rem;
+    }
+
+    .process-desc {
+      font-size: 0.85rem;
+      color: var(--text-mid);
+      line-height: 1.7;
+    }
+
+    /* ===========================
+       REVIEWS SECTION
+    =========================== */
+    .reviews {
+      padding: 7rem 0;
+      background: var(--cream-light);
+    }
+
+    .reviews-header {
+      text-align: center;
+      margin-bottom: 4rem;
+    }
+
+    .reviews-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1.5rem;
+    }
+
+    .review-card {
+      background: var(--white);
+      padding: 2.2rem;
+      box-shadow: var(--shadow);
+      position: relative;
+      transition: transform var(--transition), box-shadow var(--transition);
+    }
+
+    .review-card:hover {
+      transform: translateY(-4px);
+      box-shadow: var(--shadow-lg);
+    }
+
+    .review-card::before {
+      content: '\201C';
+      position: absolute;
+      top: 1rem; right: 1.5rem;
+      font-family: var(--serif);
+      font-size: 5rem;
+      line-height: 1;
+      color: var(--gold);
+      opacity: 0.2;
+    }
+
+    .review-stars {
+      display: flex;
+      gap: 3px;
+      margin-bottom: 1rem;
+    }
+
+    .review-stars span {
+      color: var(--gold);
+      font-size: 0.9rem;
+    }
+
+    .review-text {
+      font-family: var(--serif);
+      font-size: 1rem;
+      font-style: italic;
+      color: var(--text-mid);
+      line-height: 1.75;
+      margin-bottom: 1.5rem;
+    }
+
+    .review-author {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .review-avatar {
+      width: 42px; height: 42px;
+      border-radius: 50%;
+      background: var(--brown);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--serif);
+      font-size: 1rem;
+      color: var(--gold);
+      font-weight: 600;
+      flex-shrink: 0;
+    }
+
+    .review-name {
+      font-family: var(--sans);
+      font-size: 0.82rem;
+      font-weight: 500;
+      color: var(--brown);
+      letter-spacing: 0.05em;
+    }
+
+    .review-dog {
+      font-size: 0.75rem;
+      color: var(--text-mid);
+      margin-top: 1px;
+    }
+
+    /* ===========================
+       GALLERY SECTION
+    =========================== */
+    .gallery {
+      padding: 7rem 0;
+      background: var(--brown);
+    }
+
+    .gallery-header {
+      text-align: center;
+      margin-bottom: 3rem;
+    }
+
+    .gallery-header .section-title { color: var(--cream); }
+
+    .gallery-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      grid-template-rows: auto auto;
+      gap: 6px;
+    }
+
+    .gallery-item {
+      overflow: hidden;
+      position: relative;
+      background: var(--brown-mid);
+    }
+
+    .gallery-item:first-child {
+      grid-column: span 2;
+      grid-row: span 2;
+    }
+
+    .gallery-item-inner {
+      width: 100%;
+      padding-top: 100%;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .gallery-item:first-child .gallery-item-inner {
+      padding-top: 100%;
+    }
+
+    .gallery-placeholder {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      background: var(--brown-mid);
+      transition: all var(--transition);
+    }
+
+    .gallery-placeholder-icon {
+      font-size: 2.5rem;
+      opacity: 0.3;
+    }
+
+    .gallery-placeholder-text {
+      font-family: var(--sans);
+      font-size: 0.65rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: rgba(245,230,200,0.3);
+    }
+
+    .gallery-item:hover .gallery-placeholder { background: var(--brown-light); }
+
+    .gallery-overlay {
+      position: absolute;
+      inset: 0;
+      background: rgba(26,15,11,0.5);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      transition: opacity var(--transition);
+    }
+
+    .gallery-item:hover .gallery-overlay { opacity: 1; }
+
+    .gallery-overlay-text {
+      font-family: var(--serif);
+      font-size: 0.9rem;
+      font-style: italic;
+      color: var(--gold);
+      letter-spacing: 0.1em;
+    }
+
+    /* ===========================
+       BOOKING SECTION
+    =========================== */
+    .booking {
+      padding: 7rem 0;
+      background: var(--cream-light);
+    }
+
+    .booking-grid {
+      display: grid;
+      grid-template-columns: 1fr 1.4fr;
+      gap: 5rem;
+      align-items: start;
+    }
+
+    .booking-info .section-sub { max-width: 380px; }
+
+    .booking-features {
+      list-style: none;
+      margin-top: 2rem;
+    }
+
+    .booking-features li {
+      display: flex;
+      align-items: flex-start;
+      gap: 1rem;
+      padding: 1rem 0;
+      border-bottom: 1px solid rgba(26,15,11,0.08);
+    }
+
+    .booking-features li:last-child { border-bottom: none; }
+
+    .booking-feature-icon {
+      width: 36px; height: 36px;
+      background: var(--brown);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      font-size: 0.9rem;
+    }
+
+    .booking-feature-text strong {
+      display: block;
+      font-family: var(--sans);
+      font-size: 0.82rem;
+      font-weight: 500;
+      color: var(--brown);
+      letter-spacing: 0.05em;
+      margin-bottom: 2px;
+    }
+
+    .booking-feature-text span {
+      font-size: 0.8rem;
+      color: var(--text-mid);
+    }
+
+    /* Form */
+    .booking-form {
+      background: var(--white);
+      padding: 3rem;
+      box-shadow: var(--shadow);
+    }
+
+    .form-title {
+      font-family: var(--serif);
+      font-size: 1.6rem;
+      font-weight: 400;
+      color: var(--brown);
+      margin-bottom: 0.5rem;
+    }
+
+    .form-subtitle {
+      font-size: 0.82rem;
+      color: var(--text-mid);
+      margin-bottom: 2rem;
+    }
+
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+    }
+
+    .form-group {
+      margin-bottom: 1.2rem;
+    }
+
+    .form-group label {
+      display: block;
+      font-family: var(--sans);
+      font-size: 0.72rem;
+      font-weight: 500;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--brown);
+      margin-bottom: 0.5rem;
+    }
+
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+      width: 100%;
+      padding: 0.85rem 1rem;
+      border: 1.5px solid rgba(26,15,11,0.12);
+      background: var(--cream-light);
+      font-family: var(--sans);
+      font-size: 0.88rem;
+      color: var(--text-dark);
+      outline: none;
+      transition: border-color var(--transition);
+      appearance: none;
+    }
+
+    .form-group input:focus,
+    .form-group select:focus,
+    .form-group textarea:focus {
+      border-color: var(--gold);
+      background: var(--white);
+    }
+
+    .form-group select {
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%231a0f0b' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 1rem center;
+      padding-right: 2.5rem;
+    }
+
+    .form-group textarea { resize: vertical; min-height: 100px; }
+
+    .form-submit {
+      width: 100%;
+      padding: 1rem;
+      background: var(--brown);
+      color: var(--gold);
+      font-family: var(--sans);
+      font-size: 0.78rem;
+      font-weight: 500;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      border: none;
+      cursor: pointer;
+      transition: all var(--transition);
+      margin-top: 0.5rem;
+    }
+
+    .form-submit:hover {
+      background: var(--gold);
+      color: var(--brown);
+    }
+
+    .form-privacy {
+      font-size: 0.72rem;
+      color: var(--text-mid);
+      text-align: center;
+      margin-top: 1rem;
+      opacity: 0.7;
+    }
+
+    /* Success message */
+    .form-success {
+      display: none;
+      text-align: center;
+      padding: 2rem;
+    }
+
+    .form-success-icon {
+      font-size: 3rem;
+      margin-bottom: 1rem;
+    }
+
+    .form-success h3 {
+      font-family: var(--serif);
+      font-size: 1.5rem;
+      color: var(--brown);
+      margin-bottom: 0.5rem;
+    }
+
+    .form-success p {
+      font-size: 0.88rem;
+      color: var(--text-mid);
+    }
+
+    /* ===========================
+       CONTACT SECTION
+    =========================== */
+    .contact {
+      padding: 7rem 0;
+      background: var(--brown);
+    }
+
+    .contact-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 5rem;
+    }
+
+    .contact-info .section-title { color: var(--cream); }
+    .contact-info .section-sub { color: rgba(245,230,200,0.7); }
+
+    .contact-items {
+      margin-top: 2.5rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+    }
+
+    .contact-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 1.2rem;
+    }
+
+    .contact-item-icon {
+      width: 44px; height: 44px;
+      border: 1px solid rgba(212,175,55,0.3);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1rem;
+      flex-shrink: 0;
+      color: var(--gold);
+    }
+
+    .contact-item-label {
+      font-family: var(--sans);
+      font-size: 0.68rem;
+      font-weight: 500;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 0.3rem;
+    }
+
+    .contact-item-value {
+      font-size: 0.95rem;
+      color: var(--cream);
+      line-height: 1.5;
+    }
+
+    .contact-item-value a {
+      color: var(--cream);
+      transition: color var(--transition);
+    }
+
+    .contact-item-value a:hover { color: var(--gold); }
+
+    .contact-hours {
+      margin-top: 2.5rem;
+      padding: 1.5rem;
+      border: 1px solid rgba(212,175,55,0.2);
+    }
+
+    .contact-hours-title {
+      font-family: var(--sans);
+      font-size: 0.7rem;
+      font-weight: 500;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 1rem;
+    }
+
+    .contact-hours-row {
+      display: flex;
+      justify-content: space-between;
+      padding: 0.4rem 0;
+      border-bottom: 1px solid rgba(212,175,55,0.1);
+      font-size: 0.85rem;
+    }
+
+    .contact-hours-row:last-child { border-bottom: none; }
+
+    .contact-hours-day { color: rgba(245,230,200,0.7); }
+    .contact-hours-time { color: var(--cream); font-weight: 400; }
+    .contact-hours-closed { color: rgba(245,230,200,0.35); font-style: italic; }
+
+    /* Map placeholder */
+    .contact-map {
+      background: var(--brown-mid);
+      border: 1px solid rgba(212,175,55,0.15);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 300px;
+      gap: 1rem;
+      padding: 2rem;
+      text-align: center;
+    }
+
+    .contact-map-icon { font-size: 3rem; opacity: 0.4; }
+
+    .contact-map-text {
+      font-family: var(--serif);
+      font-size: 1.1rem;
+      font-style: italic;
+      color: var(--cream);
+      opacity: 0.6;
+    }
+
+    .contact-map-address {
+      font-size: 0.82rem;
+      color: var(--gold);
+      letter-spacing: 0.08em;
+    }
+
+    .contact-whatsapp {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.75rem;
+      margin-top: 2rem;
+      padding: 1rem 1.8rem;
+      background: #25D366;
+      color: white;
+      font-family: var(--sans);
+      font-size: 0.8rem;
+      font-weight: 500;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      transition: all var(--transition);
+    }
+
+    .contact-whatsapp:hover {
+      background: #1ebe5d;
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(37,211,102,0.3);
+    }
+
+    /* ===========================
+       FOOTER
+    =========================== */
+    .footer {
+      background: #0f0806;
+      padding: 3rem 0 1.5rem;
+    }
+
+    .footer-inner {
+      display: grid;
+      grid-template-columns: 1.5fr 1fr 1fr;
+      gap: 3rem;
+      padding-bottom: 2.5rem;
+      border-bottom: 1px solid rgba(212,175,55,0.1);
+    }
+
+    .footer-brand-name {
+      font-family: var(--serif);
+      font-size: 1.6rem;
+      font-weight: 400;
+      color: var(--gold);
+      margin-bottom: 0.3rem;
+    }
+
+    .footer-brand-sub {
+      font-family: var(--sans);
+      font-size: 0.65rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: rgba(245,230,200,0.4);
+      margin-bottom: 1rem;
+    }
+
+    .footer-brand-desc {
+      font-size: 0.82rem;
+      color: rgba(245,230,200,0.5);
+      line-height: 1.8;
+      max-width: 280px;
+    }
+
+    .footer-col-title {
+      font-family: var(--sans);
+      font-size: 0.68rem;
+      font-weight: 500;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 1.2rem;
+    }
+
+    .footer-links {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 0.6rem;
+    }
+
+    .footer-links a {
+      font-size: 0.82rem;
+      color: rgba(245,230,200,0.55);
+      transition: color var(--transition);
+    }
+
+    .footer-links a:hover { color: var(--gold); }
+
+    .footer-bottom {
+      padding-top: 1.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+
+    .footer-copy {
+      font-size: 0.72rem;
+      color: rgba(245,230,200,0.3);
+    }
+
+    .footer-copy a {
+      color: rgba(212,175,55,0.5);
+      transition: color var(--transition);
+    }
+
+    .footer-copy a:hover { color: var(--gold); }
+
+    /* ===========================
+       WHATSAPP FLOATING BUTTON
+    =========================== */
+    .whatsapp-float {
+      position: fixed;
+      bottom: 2rem;
+      right: 2rem;
+      z-index: 900;
+      width: 56px; height: 56px;
+      border-radius: 50%;
+      background: #25D366;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 4px 20px rgba(37,211,102,0.4);
+      transition: all var(--transition);
+      text-decoration: none;
+    }
+
+    .whatsapp-float:hover {
+      transform: scale(1.1);
+      box-shadow: 0 6px 28px rgba(37,211,102,0.5);
+    }
+
+    .whatsapp-float svg {
+      width: 28px; height: 28px;
+      fill: white;
+    }
+
+    /* Pulse animation */
+    .whatsapp-float::before {
+      content: '';
+      position: absolute;
+      inset: -4px;
+      border-radius: 50%;
+      background: rgba(37,211,102,0.3);
+      animation: pulse 2.5s ease-in-out infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); opacity: 0.7; }
+      50% { transform: scale(1.15); opacity: 0; }
+    }
+
+    /* ===========================
+       SCROLL ANIMATIONS
+    =========================== */
+    .fade-up {
+      opacity: 0;
+      transform: translateY(30px);
+      transition: opacity 0.7s ease, transform 0.7s ease;
+    }
+
+    .fade-up.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .fade-up-delay-1 { transition-delay: 0.1s; }
+    .fade-up-delay-2 { transition-delay: 0.2s; }
+    .fade-up-delay-3 { transition-delay: 0.3s; }
+    .fade-up-delay-4 { transition-delay: 0.4s; }
+
+    /* ===========================
+       RESPONSIVE
+    =========================== */
+    @media (max-width: 1024px) {
+      .about-grid { grid-template-columns: 1fr; gap: 3rem; }
+      .about-image-wrap { max-width: 500px; margin: 0 auto; }
+      .services-grid { grid-template-columns: repeat(2, 1fr); }
+      .process-steps { grid-template-columns: repeat(2, 1fr); gap: 2rem; }
+      .process-steps::before { display: none; }
+      .reviews-grid { grid-template-columns: repeat(2, 1fr); }
+      .booking-grid { grid-template-columns: 1fr; gap: 3rem; }
+      .contact-grid { grid-template-columns: 1fr; gap: 3rem; }
+      .footer-inner { grid-template-columns: 1fr 1fr; }
+      .hero-image-panel { width: 35%; }
+      .hero-badge { display: none; }
+    }
+
+    @media (max-width: 768px) {
+      .nav-links { display: none; }
+      .hamburger { display: flex; }
+
+      .hero-image-panel { display: none; }
+      .hero::after { display: none; }
+
+      .services-grid { grid-template-columns: 1fr; }
+      .reviews-grid { grid-template-columns: 1fr; }
+      .gallery-grid { grid-template-columns: repeat(2, 1fr); }
+      .gallery-item:first-child { grid-column: span 2; }
+
+      .form-row { grid-template-columns: 1fr; }
+      .booking-form { padding: 2rem 1.5rem; }
+
+      .footer-inner { grid-template-columns: 1fr; gap: 2rem; }
+      .footer-bottom { flex-direction: column; text-align: center; }
+
+      .about-image-accent { display: none; }
+      .about-frame { display: none; }
+
+      .intro-strip-item:nth-child(n+3) { display: none; }
+    }
+
+    @media (max-width: 480px) {
+      .hero-btns { flex-direction: column; }
+      .hero-btns .btn { width: 100%; text-align: center; }
+      .about-stats { grid-template-columns: repeat(3, 1fr); gap: 0.75rem; }
+      .process-steps { grid-template-columns: 1fr; }
+      .gallery-grid { grid-template-columns: 1fr; }
+      .gallery-item:first-child { grid-column: span 1; }
+    }
+  </style>
 </head>
 <body>
 
-<!-- LOGIN OVERLAY -->
-<div id="loginOverlay">
-  <h2>Voer Wachtwoord in</h2>
-  <input type="password" id="passwordInput" placeholder="Wachtwoord">
-  <button onclick="checkPassword()">Login</button>
-  <div class="error" id="loginError"></div>
-</div>
-
-<div class="wrapper">
-  <div class="sidebar">
-    <div class="logo">Mafiaway Control Dashboard</div>
-    <div class="menu">
-      <button onclick="showPage('dashboard')">Dashboard</button>
-      <button onclick="showPage('loops')">Tools</button>
-      <button onclick="showPage('stats')">Statistieken</button>
-      <button onclick="showPage('settings')">Settings</button>
-    </div>
-  </div>
-  <div class="main">
-    <div class="header">
-      <div>Welkom bij de Mafiaway Control Dashboard</div>
-      <span id="clock"></span>
-      <div class="money">Made by Kanemori</div>
-    </div>
-    <div class="content">
-      <!-- DASHBOARD -->
-      <div id="dashboard" class="page active">
-        <div class="stats">
-          <div class="stat">Tools Manager PRO<br><b>v2.0</b></div>
-          <div class="stat">Aantal Tools<br><b>8</b></div>
-          <div class="stat">Laatst geupdate<br><b>15-03-2026</b></div>
-          <div class="stat">Gemaakt door<br><b>Kermit</b></div>
-        </div>
-        <div class="dashboard">
-          <div class="card"><h3>Server Status</h3><p>Online 🟢</p></div>
-          <div class="card"><h3>Tools actief</h3><p id="activeLoops">0</p></div>
-          <div class="card"><h3>Aantal tools per minuut</h3><p id="rpm">0</p></div>
-          <div class="card"><h3>Windows open</h3><p id="windows">0</p></div>
-        </div>
-      </div>
-
-      <!-- LOOPS -->
-      <div id="loops" class="page">
-        <h2>Kies een categorie</h2>
-        <div id="loopCategories" class="dashboard">
-          <div class="card category" onclick="showCategory('cat1')">Attack Tools</div>
-          <div class="card category" onclick="showCategory('cat2')">Pimp Tools</div>
-          <div class="card category" onclick="showCategory('cat3')">Misdaad Tools</div>
-          <div class="card category" onclick="showCategory('cat4')">Custom Tools</div>
-        </div>
-        <div id="categoryLoops" style="display:none;"></div>
-      </div>
-
-      <!-- STATS -->
-      <div id="stats" class="page">
-        <h2>Statistieken</h2>
-        <div class="card">
-          <canvas id="statsChart"></canvas>
-        </div>
-      </div>
-
-      <!-- SETTINGS -->
-      <div id="settings" class="page">
-        <h2>Settings</h2>
-        <div class="card"><p>Configuratie opties.</p></div>
+<!-- ===========================
+     NAVIGATION
+=========================== -->
+<nav class="nav" id="mainNav">
+  <div class="container">
+    <div class="nav-inner">
+      <a href="#home" class="nav-logo">
+        <span class="nav-logo-main">Patricia</span>
+        <span class="nav-logo-sub">Hondensalon</span>
+      </a>
+      <ul class="nav-links">
+        <li><a href="#home">Home</a></li>
+        <li><a href="#over">Over Patricia</a></li>
+        <li><a href="#diensten">Diensten</a></li>
+        <li><a href="#reviews">Reviews</a></li>
+        <li><a href="#contact">Contact</a></li>
+        <li><a href="#afspraak" class="btn btn-gold nav-cta">Afspraak Maken</a></li>
+      </ul>
+      <div class="hamburger" id="hamburger" onclick="toggleMenu()">
+        <span></span><span></span><span></span>
       </div>
     </div>
   </div>
+</nav>
+
+<!-- Mobile Navigation -->
+<div class="mobile-nav" id="mobileNav">
+  <a href="#home" onclick="closeMenu()">Home</a>
+  <a href="#over" onclick="closeMenu()">Over Patricia</a>
+  <a href="#diensten" onclick="closeMenu()">Diensten</a>
+  <a href="#reviews" onclick="closeMenu()">Reviews</a>
+  <a href="#afspraak" onclick="closeMenu()">Afspraak Maken</a>
+  <a href="#contact" onclick="closeMenu()">Contact</a>
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<!-- ===========================
+     HERO
+=========================== -->
+<section class="hero" id="home">
+  <div class="container">
+    <div class="hero-content">
+      <div class="hero-eyebrow">Hondensalon Patricia — Wieringerwaard</div>
+      <h1 class="hero-title">
+        Luxe verzorging<br>voor jouw <em>trouwe vriend</em>
+      </h1>
+      <p class="hero-subtitle">Professionele, liefdevolle verzorging in een luxe omgeving</p>
+      <div class="hero-divider"></div>
+      <p class="hero-desc">
+        Bij Hondensalon Patricia staat jouw hond centraal. Met vakkundige handen en een warm hart zorgen wij voor een verzorgde, gelukkige hond — elke keer weer.
+      </p>
+      <div class="hero-btns">
+        <a href="#afspraak" class="btn btn-gold">Maak een afspraak</a>
+        <a href="#diensten" class="btn btn-outline-white">Bekijk diensten</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Image panel -->
+  <div class="hero-image-panel">
+    <img src="https://images.unsplash.com/photo-1587300003388-59208cc962cb?w=900&q=80" alt="Luxe hondenverzorging" />
+  </div>
+
+  <!-- Floating badge -->
+  <div class="hero-badge">
+    <span class="hero-badge-num">10+</span>
+    <span class="hero-badge-text">Jaar<br>Ervaring</span>
+  </div>
+
+  <!-- Scroll indicator -->
+  <div class="hero-scroll">
+    <div class="hero-scroll-line"></div>
+    <span>Scroll</span>
+  </div>
+</section>
+
+<!-- ===========================
+     INTRO STRIP
+=========================== -->
+<div class="intro-strip">
+  <div class="container">
+    <div class="intro-strip-inner">
+      <div class="intro-strip-item">🐾 Professionele verzorging</div>
+      <div class="intro-strip-dot"></div>
+      <div class="intro-strip-item">✂️ Alle rassen welkom</div>
+      <div class="intro-strip-dot"></div>
+      <div class="intro-strip-item">💛 Liefdevolle aanpak</div>
+      <div class="intro-strip-dot"></div>
+      <div class="intro-strip-item">📍 Wieringerwaard</div>
+    </div>
+  </div>
+</div>
+
+<!-- ===========================
+     ABOUT SECTION
+=========================== -->
+<section class="about" id="over">
+  <div class="container">
+    <div class="about-grid">
+      <!-- Image side -->
+      <div class="about-image-wrap fade-up">
+        <div class="about-frame"></div>
+        <img
+          class="about-image-main"
+          src="https://images.unsplash.com/photo-1548199973-03cce0bbc87b?w=700&q=80"
+          alt="Patricia met hond"
+        />
+        <img
+          class="about-image-accent"
+          src="https://images.unsplash.com/photo-1601758124510-52d02ddb7cbd?w=400&q=80"
+          alt="Hond na verzorging"
+        />
+      </div>
+
+      <!-- Text side -->
+      <div class="fade-up fade-up-delay-1">
+        <span class="section-label">Over ons</span>
+        <h2 class="section-title">Hallo, ik ben <span>Patricia</span></h2>
+        <div class="divider"></div>
+        <p class="section-sub">
+          Met meer dan 10 jaar ervaring in de hondenverzorging ben ik gepassioneerd door wat ik doe. Elk hond verdient de best mogelijke zorg — met geduld, liefde en vakmanschap.
+        </p>
+        <p style="margin-top:1rem; font-size:0.9rem; color:var(--text-mid); line-height:1.8;">
+          In mijn salon in Wieringerwaard ontvang ik honden van alle rassen en maten. Of het nu gaat om een eenvoudige vachtverzorging of een complete luxebehandeling — ik zorg dat jouw hond er stralend uitziet én zich geweldig voelt.
+        </p>
+        <p style="margin-top:1rem; font-size:0.9rem; color:var(--text-mid); line-height:1.8;">
+          Ik werk met professionele, diervriendelijke producten en neem altijd de tijd om jouw hond op zijn gemak te stellen. Jouw vertrouwen en de tevredenheid van jouw hond zijn mijn grootste beloning.
+        </p>
+
+        <div class="about-quote">
+          <p>"Elk hond verdient een verzorger die met hart en ziel werkt. Dat is mijn belofte aan jou en jouw trouwe vriend."</p>
+          <cite>— Patricia, Eigenaar &amp; Hondenverzorgster</cite>
+        </div>
+
+        <div class="about-stats">
+          <div class="about-stat">
+            <div class="about-stat-num">10+</div>
+            <div class="about-stat-label">Jaar ervaring</div>
+          </div>
+          <div class="about-stat">
+            <div class="about-stat-num">500+</div>
+            <div class="about-stat-label">Tevreden honden</div>
+          </div>
+          <div class="about-stat">
+            <div class="about-stat-num">100%</div>
+            <div class="about-stat-label">Liefde &amp; zorg</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===========================
+     SERVICES SECTION
+=========================== -->
+<section class="services" id="diensten">
+  <div class="container">
+    <div class="services-header fade-up">
+      <span class="section-label">Ons aanbod</span>
+      <h2 class="section-title" style="color:var(--cream);">Onze <span>Diensten</span></h2>
+      <div class="divider divider-center"></div>
+      <p class="section-sub">Van een frisse wasbeurt tot een complete luxebehandeling — wij bieden alles voor een stralende hond.</p>
+    </div>
+
+    <div class="services-grid">
+      <!-- Service 1 -->
+      <div class="service-card fade-up">
+        <span class="service-icon">✂️</span>
+        <h3 class="service-name">Complete Verzorging</h3>
+        <p class="service-desc">De meest complete behandeling voor jouw hond. Van wassen tot trimmen — alles inbegrepen.</p>
+        <ul class="service-includes">
+          <li>Wassen &amp; föhnen</li>
+          <li>Knippen &amp; trimmen</li>
+          <li>Nagels knippen</li>
+          <li>Oren reinigen</li>
+          <li>Parfum &amp; bandana</li>
+        </ul>
+        <div class="service-price">
+          <span class="service-price-from">Vanaf</span>
+          <span class="service-price-amount">€55</span>
+          <span class="service-price-note">/ behandeling</span>
+        </div>
+      </div>
+
+      <!-- Service 2 -->
+      <div class="service-card fade-up fade-up-delay-1">
+        <span class="service-icon">🛁</span>
+        <h3 class="service-name">Wassen &amp; Föhnen</h3>
+        <p class="service-desc">Een grondige wasbeurt met professionele, diervriendelijke shampoo en conditioner.</p>
+        <ul class="service-includes">
+          <li>Luxe shampoo &amp; conditioner</li>
+          <li>Professioneel föhnen</li>
+          <li>Borstelen &amp; kammen</li>
+          <li>Parfum</li>
+        </ul>
+        <div class="service-price">
+          <span class="service-price-from">Vanaf</span>
+          <span class="service-price-amount">€30</span>
+          <span class="service-price-note">/ behandeling</span>
+        </div>
+      </div>
+
+      <!-- Service 3 -->
+      <div class="service-card fade-up fade-up-delay-2">
+        <span class="service-icon">💅</span>
+        <h3 class="service-name">Luxe Spa Pakket</h3>
+        <p class="service-desc">De ultieme verwennerij voor jouw hond. Een complete spa-ervaring van kop tot staart.</p>
+        <ul class="service-includes">
+          <li>Alles van complete verzorging</li>
+          <li>Diepe conditionering</li>
+          <li>Tanden poetsen</li>
+          <li>Pootjes verzorging</li>
+          <li>Luxe bandana &amp; strik</li>
+        </ul>
+        <div class="service-price">
+          <span class="service-price-from">Vanaf</span>
+          <span class="service-price-amount">€75</span>
+          <span class="service-price-note">/ behandeling</span>
+        </div>
+      </div>
+
+      <!-- Service 4 -->
+      <div class="service-card fade-up fade-up-delay-3">
+        <span class="service-icon">🐾</span>
+        <h3 class="service-name">Nagels &amp; Oren</h3>
+        <p class="service-desc">Snelle, vakkundige verzorging van nagels en oren voor het welzijn van jouw hond.</p>
+        <ul class="service-includes">
+          <li>Nagels knippen &amp; vijlen</li>
+          <li>Oren reinigen</li>
+          <li>Oog- &amp; mondhoeken</li>
+        </ul>
+        <div class="service-price">
+          <span class="service-price-from">Vanaf</span>
+          <span class="service-price-amount">€15</span>
+          <span class="service-price-note">/ behandeling</span>
+        </div>
+      </div>
+
+      <!-- Service 5 -->
+      <div class="service-card fade-up fade-up-delay-1">
+        <span class="service-icon">🐩</span>
+        <h3 class="service-name">Puppy Kennismaking</h3>
+        <p class="service-desc">Een zachte, positieve eerste ervaring bij de hondensalon voor jouw jonge pup.</p>
+        <ul class="service-includes">
+          <li>Rustige kennismaking</li>
+          <li>Lichte wasbeurt</li>
+          <li>Voorzichtig föhnen</li>
+          <li>Nagels bijwerken</li>
+        </ul>
+        <div class="service-price">
+          <span class="service-price-from">Vanaf</span>
+          <span class="service-price-amount">€25</span>
+          <span class="service-price-note">/ behandeling</span>
+        </div>
+      </div>
+
+      <!-- Service 6 -->
+      <div class="service-card fade-up fade-up-delay-2">
+        <span class="service-icon">🌿</span>
+        <h3 class="service-name">Vacht Ontwarring</h3>
+        <p class="service-desc">Specialistische behandeling voor vervilte of verwarde vachten met zachte technieken.</p>
+        <ul class="service-includes">
+          <li>Professioneel ontwarren</li>
+          <li>Speciale conditioner</li>
+          <li>Borstelen &amp; kammen</li>
+          <li>Advies vachtverzorging</li>
+        </ul>
+        <div class="service-price">
+          <span class="service-price-from">Vanaf</span>
+          <span class="service-price-amount">€20</span>
+          <span class="service-price-note">/ behandeling</span>
+        </div>
+      </div>
+    </div>
+
+    <p class="services-note">* Prijzen zijn indicatief en afhankelijk van ras, grootte en vachttoestand. Neem contact op voor een exacte prijsopgave.</p>
+  </div>
+</section>
+
+<!-- ===========================
+     PROCESS SECTION
+=========================== -->
+<section class="process">
+  <div class="container">
+    <div class="process-header fade-up">
+      <span class="section-label">Hoe het werkt</span>
+      <h2 class="section-title">Van afspraak tot <span>stralende hond</span></h2>
+      <div class="divider divider-center"></div>
+    </div>
+
+    <div class="process-steps">
+      <div class="process-step fade-up">
+        <div class="process-num">1</div>
+        <h3 class="process-title">Afspraak Maken</h3>
+        <p class="process-desc">Vul het formulier in of bel ons. We plannen een moment dat jou uitkomt.</p>
+      </div>
+      <div class="process-step fade-up fade-up-delay-1">
+        <div class="process-num">2</div>
+        <h3 class="process-title">Intake &amp; Kennismaking</h3>
+        <p class="process-desc">Bij aankomst bespreken we jouw wensen en stellen we jouw hond op zijn gemak.</p>
+      </div>
+      <div class="process-step fade-up fade-up-delay-2">
+        <div class="process-num">3</div>
+        <h3 class="process-title">Luxe Verzorging</h3>
+        <p class="process-desc">Jouw hond geniet van een professionele, liefdevolle behandeling op maat.</p>
+      </div>
+      <div class="process-step fade-up fade-up-delay-3">
+        <div class="process-num">4</div>
+        <h3 class="process-title">Stralend Resultaat</h3>
+        <p class="process-desc">Jij haalt een frisse, gelukkige hond op — klaar om te stralen!</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===========================
+     REVIEWS SECTION
+=========================== -->
+<section class="reviews" id="reviews">
+  <div class="container">
+    <div class="reviews-header fade-up">
+      <span class="section-label">Wat klanten zeggen</span>
+      <h2 class="section-title">Ervaringen van <span>tevreden klanten</span></h2>
+      <div class="divider divider-center"></div>
+    </div>
+
+    <div class="reviews-grid">
+      <div class="review-card fade-up">
+        <div class="review-stars">
+          <span>★</span><span>★</span><span>★</span><span>★</span><span>★</span>
+        </div>
+        <p class="review-text">"Patricia is geweldig! Onze golden retriever Max komt altijd stralend thuis. Ze heeft zoveel geduld en liefde voor de dieren. Ik zou haar aan iedereen aanraden!"</p>
+        <div class="review-author">
+          <div class="review-avatar">S</div>
+          <div>
+            <div class="review-name">Sandra van der Berg</div>
+            <div class="review-dog">Eigenaar van Max (Golden Retriever)</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="review-card fade-up fade-up-delay-1">
+        <div class="review-stars">
+          <span>★</span><span>★</span><span>★</span><span>★</span><span>★</span>
+        </div>
+        <p class="review-text">"Onze labradoodle Bella was altijd zenuwachtig bij de kapper, maar bij Patricia voelt ze zich meteen op haar gemak. Het resultaat is elke keer prachtig!"</p>
+        <div class="review-author">
+          <div class="review-avatar">M</div>
+          <div>
+            <div class="review-name">Marco &amp; Lisa Jansen</div>
+            <div class="review-dog">Eigenaren van Bella (Labradoodle)</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="review-card fade-up fade-up-delay-2">
+        <div class="review-stars">
+          <span>★</span><span>★</span><span>★</span><span>★</span><span>★</span>
+        </div>
+        <p class="review-text">"Al jaren klant en nog steeds onder de indruk van de kwaliteit en aandacht. Patricia weet precies wat mijn hond nodig heeft. Absolute aanrader!"</p>
+        <div class="review-author">
+          <div class="review-avatar">A</div>
+          <div>
+            <div class="review-name">Annemarie Hoekstra</div>
+            <div class="review-dog">Eigenaar van Timo (Bichon Frisé)</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===========================
+     GALLERY SECTION
+=========================== -->
+<section class="gallery" id="galerij">
+  <div class="container">
+    <div class="gallery-header fade-up">
+      <span class="section-label">Onze resultaten</span>
+      <h2 class="section-title" style="color:var(--cream);">Voor &amp; <span>Na</span></h2>
+      <div class="divider divider-center"></div>
+    </div>
+
+    <div class="gallery-grid">
+      <div class="gallery-item fade-up">
+        <div class="gallery-item-inner">
+          <div class="gallery-placeholder">
+            <span class="gallery-placeholder-icon">🐶</span>
+            <span class="gallery-placeholder-text">Na behandeling</span>
+          </div>
+          <div class="gallery-overlay">
+            <span class="gallery-overlay-text">Stralend resultaat</span>
+          </div>
+        </div>
+      </div>
+      <div class="gallery-item fade-up fade-up-delay-1">
+        <div class="gallery-item-inner">
+          <div class="gallery-placeholder">
+            <span class="gallery-placeholder-icon">🐩</span>
+            <span class="gallery-placeholder-text">Luxe behandeling</span>
+          </div>
+          <div class="gallery-overlay">
+            <span class="gallery-overlay-text">Perfecte trim</span>
+          </div>
+        </div>
+      </div>
+      <div class="gallery-item fade-up fade-up-delay-2">
+        <div class="gallery-item-inner">
+          <div class="gallery-placeholder">
+            <span class="gallery-placeholder-icon">✨</span>
+            <span class="gallery-placeholder-text">Spa behandeling</span>
+          </div>
+          <div class="gallery-overlay">
+            <span class="gallery-overlay-text">Spa pakket</span>
+          </div>
+        </div>
+      </div>
+      <div class="gallery-item fade-up fade-up-delay-1">
+        <div class="gallery-item-inner">
+          <div class="gallery-placeholder">
+            <span class="gallery-placeholder-icon">🐾</span>
+            <span class="gallery-placeholder-text">Puppy verzorging</span>
+          </div>
+          <div class="gallery-overlay">
+            <span class="gallery-overlay-text">Puppy pakket</span>
+          </div>
+        </div>
+      </div>
+      <div class="gallery-item fade-up fade-up-delay-2">
+        <div class="gallery-item-inner">
+          <div class="gallery-placeholder">
+            <span class="gallery-placeholder-icon">💛</span>
+            <span class="gallery-placeholder-text">Complete verzorging</span>
+          </div>
+          <div class="gallery-overlay">
+            <span class="gallery-overlay-text">Complete trim</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <p style="text-align:center; margin-top:2rem; font-size:0.8rem; color:rgba(245,230,200,0.4); font-style:italic;">
+      Foto's worden binnenkort toegevoegd. Volg ons voor de laatste resultaten.
+    </p>
+  </div>
+</section>
+
+<!-- ===========================
+     BOOKING SECTION
+=========================== -->
+<section class="booking" id="afspraak">
+  <div class="container">
+    <div class="booking-grid">
+      <!-- Info side -->
+      <div class="fade-up">
+        <span class="section-label">Afspraak maken</span>
+        <h2 class="section-title">Boek jouw <span>behandeling</span></h2>
+        <div class="divider"></div>
+        <p class="section-sub">
+          Maak eenvoudig een afspraak via het formulier. We nemen binnen 24 uur contact met je op om de afspraak te bevestigen.
+        </p>
+
+        <ul class="booking-features">
+          <li>
+            <div class="booking-feature-icon">📅</div>
+            <div class="booking-feature-text">
+              <strong>Flexibele tijden</strong>
+              <span>Maandag t/m zaterdag beschikbaar</span>
+            </div>
+          </li>
+          <li>
+            <div class="booking-feature-icon">⚡</div>
+            <div class="booking-feature-text">
+              <strong>Snelle bevestiging</strong>
+              <span>Reactie binnen 24 uur gegarandeerd</span>
+            </div>
+          </li>
+          <li>
+            <div class="booking-feature-icon">🐾</div>
+            <div class="booking-feature-text">
+              <strong>Op maat advies</strong>
+              <span>We bespreken de beste behandeling voor jouw hond</span>
+            </div>
+          </li>
+          <li>
+            <div class="booking-feature-icon">💬</div>
+            <div class="booking-feature-text">
+              <strong>Ook via WhatsApp</strong>
+              <span>Stuur ons een berichtje voor een snelle reactie</span>
+            </div>
+          </li>
+        </ul>
+      </div>
+
+      <!-- Form side -->
+      <div class="fade-up fade-up-delay-1">
+        <div class="booking-form">
+          <h3 class="form-title">Afspraak Aanvragen</h3>
+          <p class="form-subtitle">Vul het formulier in en we nemen snel contact op.</p>
+
+          <form id="bookingForm" action="https://formspree.io/f/your-form-id" method="POST" onsubmit="handleSubmit(event)">
+            <div class="form-row">
+              <div class="form-group">
+                <label for="naam">Jouw naam *</label>
+                <input type="text" id="naam" name="naam" placeholder="Jan de Vries" required />
+              </div>
+              <div class="form-group">
+                <label for="telefoon">Telefoonnummer *</label>
+                <input type="tel" id="telefoon" name="telefoon" placeholder="06 12 34 56 78" required />
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="email">E-mailadres *</label>
+              <input type="email" id="email" name="email" placeholder="jan@email.nl" required />
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label for="ras">Ras van jouw hond *</label>
+                <input type="text" id="ras" name="ras" placeholder="bijv. Labrador" required />
+              </div>
+              <div class="form-group">
+                <label for="grootte">Grootte</label>
+                <select id="grootte" name="grootte">
+                  <option value="">Selecteer grootte</option>
+                  <option value="klein">Klein (&lt; 10 kg)</option>
+                  <option value="middel">Middel (10–25 kg)</option>
+                  <option value="groot">Groot (&gt; 25 kg)</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="dienst">Gewenste dienst *</label>
+              <select id="dienst" name="dienst" required>
+                <option value="">Selecteer een dienst</option>
+                <option value="complete">Complete Verzorging</option>
+                <option value="wassen">Wassen &amp; Föhnen</option>
+                <option value="luxe">Luxe Spa Pakket</option>
+                <option value="nagels">Nagels &amp; Oren</option>
+                <option value="puppy">Puppy Kennismaking</option>
+                <option value="ontwarring">Vacht Ontwarring</option>
+                <option value="overleg">In overleg</option>
+              </select>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label for="datum">Gewenste datum</label>
+                <input type="date" id="datum" name="datum" />
+              </div>
+              <div class="form-group">
+                <label for="tijd">Voorkeur tijdstip</label>
+                <select id="tijd" name="tijd">
+                  <option value="">Geen voorkeur</option>
+                  <option value="ochtend">Ochtend (9:00–12:00)</option>
+                  <option value="middag">Middag (12:00–17:00)</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="bericht">Aanvullende informatie</label>
+              <textarea id="bericht" name="bericht" placeholder="Heeft jouw hond bijzonderheden? Laat het ons weten..."></textarea>
+            </div>
+
+            <button type="submit" class="form-submit">Afspraak Aanvragen →</button>
+            <p class="form-privacy">🔒 Jouw gegevens worden vertrouwelijk behandeld en nooit gedeeld.</p>
+          </form>
+
+          <!-- Success message -->
+          <div class="form-success" id="formSuccess">
+            <div class="form-success-icon">✅</div>
+            <h3>Aanvraag ontvangen!</h3>
+            <p>Bedankt voor jouw aanvraag. We nemen binnen 24 uur contact met je op om de afspraak te bevestigen.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===========================
+     CONTACT SECTION
+=========================== -->
+<section class="contact" id="contact">
+  <div class="container">
+    <div class="contact-grid">
+      <!-- Contact info -->
+      <div class="fade-up">
+        <span class="section-label">Neem contact op</span>
+        <h2 class="section-title" style="color:var(--cream);">We horen <span>graag van je</span></h2>
+        <div class="divider"></div>
+        <p class="section-sub" style="color:rgba(245,230,200,0.7);">
+          Heb je een vraag, wil je meer informatie of wil je direct een afspraak maken? Neem gerust contact op!
+        </p>
+
+        <div class="contact-items">
+          <div class="contact-item">
+            <div class="contact-item-icon">📍</div>
+            <div>
+              <div class="contact-item-label">Adres</div>
+              <div class="contact-item-value">Wieringerwaard &amp; omgeving<br>Noord-Holland</div>
+            </div>
+          </div>
+          <div class="contact-item">
+            <div class="contact-item-icon">📞</div>
+            <div>
+              <div class="contact-item-label">Telefoon</div>
+              <div class="contact-item-value">
+                <a href="tel:+31612345678">06 12 34 56 78</a>
+              </div>
+            </div>
+          </div>
+          <div class="contact-item">
+            <div class="contact-item-icon">✉️</div>
+            <div>
+              <div class="contact-item-label">E-mail</div>
+              <div class="contact-item-value">
+                <a href="mailto:info@hondensalonpatricia.nl">info@hondensalonpatricia.nl</a>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="contact-hours">
+          <div class="contact-hours-title">Openingstijden</div>
+          <div class="contact-hours-row">
+            <span class="contact-hours-day">Maandag – Vrijdag</span>
+            <span class="contact-hours-time">9:00 – 17:00</span>
+          </div>
+          <div class="contact-hours-row">
+            <span class="contact-hours-day">Zaterdag</span>
+            <span class="contact-hours-time">9:00 – 14:00</span>
+          </div>
+          <div class="contact-hours-row">
+            <span class="contact-hours-day">Zondag</span>
+            <span class="contact-hours-closed">Gesloten</span>
+          </div>
+        </div>
+
+        <a href="https://wa.me/31612345678?text=Hallo%20Patricia%2C%20ik%20wil%20graag%20een%20afspraak%20maken." class="contact-whatsapp" target="_blank" rel="noopener">
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="white"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+          App ons op WhatsApp
+        </a>
+      </div>
+
+      <!-- Map / visual -->
+      <div class="fade-up fade-up-delay-1">
+        <div class="contact-map">
+          <span class="contact-map-icon">📍</span>
+          <p class="contact-map-text">Hondensalon Patricia</p>
+          <p class="contact-map-address">Wieringerwaard, Noord-Holland</p>
+          <a href="https://maps.google.com/?q=Wieringerwaard" target="_blank" rel="noopener" class="btn btn-outline" style="margin-top:1.5rem; font-size:0.72rem;">
+            Bekijk op Google Maps
+          </a>
+        </div>
+
+        <!-- Quick contact form -->
+        <div style="margin-top:1.5rem; padding:2rem; background:var(--brown-mid); border:1px solid rgba(212,175,55,0.15);">
+          <h4 style="font-family:var(--serif); font-size:1.2rem; color:var(--cream); margin-bottom:1rem;">Snel bericht sturen</h4>
+          <form action="https://formspree.io/f/your-form-id" method="POST">
+            <div class="form-group">
+              <label style="color:rgba(245,230,200,0.7);">Naam</label>
+              <input type="text" name="naam" placeholder="Jouw naam" style="background:var(--brown); border-color:rgba(212,175,55,0.2); color:var(--cream);" />
+            </div>
+            <div class="form-group">
+              <label style="color:rgba(245,230,200,0.7);">Bericht</label>
+              <textarea name="bericht" placeholder="Jouw vraag of bericht..." style="background:var(--brown); border-color:rgba(212,175,55,0.2); color:var(--cream); min-height:80px;"></textarea>
+            </div>
+            <button type="submit" class="btn btn-gold" style="width:100%; font-size:0.75rem;">Verstuur Bericht</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===========================
+     FOOTER
+=========================== -->
+<footer class="footer">
+  <div class="container">
+    <div class="footer-inner">
+      <div>
+        <div class="footer-brand-name">Hondensalon Patricia</div>
+        <div class="footer-brand-sub">Luxe Hondenverzorging</div>
+        <p class="footer-brand-desc">
+          Professionele, liefdevolle verzorging voor jouw hond in een luxe omgeving. Gevestigd in Wieringerwaard, Noord-Holland.
+        </p>
+      </div>
+
+      <div>
+        <div class="footer-col-title">Navigatie</div>
+        <ul class="footer-links">
+          <li><a href="#home">Home</a></li>
+          <li><a href="#over">Over Patricia</a></li>
+          <li><a href="#diensten">Diensten</a></li>
+          <li><a href="#reviews">Reviews</a></li>
+          <li><a href="#afspraak">Afspraak Maken</a></li>
+          <li><a href="#contact">Contact</a></li>
+        </ul>
+      </div>
+
+      <div>
+        <div class="footer-col-title">Diensten</div>
+        <ul class="footer-links">
+          <li><a href="#diensten">Complete Verzorging</a></li>
+          <li><a href="#diensten">Wassen &amp; Föhnen</a></li>
+          <li><a href="#diensten">Luxe Spa Pakket</a></li>
+          <li><a href="#diensten">Nagels &amp; Oren</a></li>
+          <li><a href="#diensten">Puppy Kennismaking</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="footer-bottom">
+      <p class="footer-copy">© 2025 Hondensalon Patricia. Alle rechten voorbehouden.</p>
+      <p class="footer-copy">
+        <a href="#">Privacybeleid</a> &nbsp;·&nbsp; <a href="#">Algemene Voorwaarden</a>
+      </p>
+    </div>
+  </div>
+</footer>
+
+<!-- ===========================
+     WHATSAPP FLOATING BUTTON
+=========================== -->
+<a
+  href="https://wa.me/31612345678?text=Hallo%20Patricia%2C%20ik%20wil%20graag%20een%20afspraak%20maken."
+  class="whatsapp-float"
+  target="_blank"
+  rel="noopener"
+  aria-label="Contact via WhatsApp"
+>
+  <svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+</a>
+
+<!-- ===========================
+     JAVASCRIPT
+=========================== -->
 <script>
-// 🔑 Wachtwoord
-const PASSWORD = "Nattekut123";
-function checkPassword(){
-  const input = document.getElementById('passwordInput').value;
-  const errorDiv = document.getElementById('loginError');
-  if(input === PASSWORD){
-    document.getElementById('loginOverlay').style.display = 'none';
-  } else {
-    errorDiv.innerText = "Ongeldig wachtwoord!";
-  }
-}
-
-// Klok
-function startClock(){
-  function updateClock(){
-    const now = new Date();
-    const h = String(now.getHours()).padStart(2,'0');
-    const m = String(now.getMinutes()).padStart(2,'0');
-    const s = String(now.getSeconds()).padStart(2,'0');
-    document.getElementById('clock').innerText = `${h}:${m}:${s}`;
-    requestAnimationFrame(updateClock);
-  }
-  updateClock();
-}
-startClock();
-
-// Navigatie
-function showPage(id){
-  document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));
-  document.getElementById(id).classList.add("active");
-  if(id==='loops'){
-    document.getElementById("loopCategories").style.display="grid";
-    document.getElementById("categoryLoops").style.display="none";
-  }
-}
-
-// ==================== COMPLETE LOOPS SCRIPT ====================
-
-// Loop data – 4 loops per categorie
-const categories={
-  cat1:[
-    {name:"Lijst 1", sites:[  "https://www.mafiaway.nl/attack.php?x=Bastiano&valid=05aa12e9",
-  "https://www.mafiaway.nl/attack.php?x=Pondhoofd&valid=05aa12e9",
-  "https://www.mafiaway.nl/attack.php?x=Adventador&valid=05aa12e9",
-  "https://www.mafiaway.nl/attack.php?x=Miracle&valid=05aa12e9",
-  "https://www.mafiaway.nl/attack.php?x=Tokio&valid=05aa12e9",
-  "https://www.mafiaway.nl/attack.php?x=Umitg&valid=05aa12e9",
-  "https://www.mafiaway.nl/attack.php?x=Ghostwalker&valid=05aa12e9",
-  "https://www.mafiaway.nl/attack.php?x=Itsjessie&valid=05aa12e9",
-  "https://www.mafiaway.nl/attack.php?x=Titandwarf&valid=05aa12e9",
-  "https://www.mafiaway.nl/attack.php?x=Sennal&valid=05aa12e9",
-  "https://www.mafiaway.nl/attack.php?x=Misterdvs&valid=05aa12e9",
-  "https://www.mafiaway.nl/attack.php?x=Pikminn&valid=05aa12e9",
-  "https://www.mafiaway.nl/attack.php?x=Darksweetness&valid=05aa12e9",
-  "https://www.mafiaway.nl/attack.php?x=Squall&valid=05aa12e9",
-  "https://www.mafiaway.nl/attack.php?x=Knieperd&valid=05aa12e9",
-  "https://www.mafiaway.nl/attack.php?x=Frontal&valid=05aa12e9",
-  "https://www.mafiaway.nl/attack.php?x=Spaghetti&valid=05aa12e9",
-  "https://www.mafiaway.nl/attack.php?x=Acha&valid=05aa12e9",
-  "https://www.mafiaway.nl/attack.php?x=Barregaander&valid=05aa12e9",
-  "https://www.mafiaway.nl/attack.php?x=Fring&valid=05aa12e9",
-  "https://www.mafiaway.nl/attack.php?x=Bergsestrijders&valid=05aa12e9",
-  "https://www.mafiaway.nl/attack.php?x=Deadshot&valid=05aa12e9",
-  "https://www.mafiaway.nl/attack.php?x=Arkan&valid=05aa12e9",
-  "https://www.mafiaway.nl/attack.php?x=Failprofessor&valid=05aa12e9",
-  "https://www.mafiaway.nl/attack.php?x=Demie&valid=05aa12e9",
-  "https://www.mafiaway.nl/attack.php?x=Lammefrans&valid=05aa12e9",
-  "https://www.mafiaway.nl/attack.php?x=Zackink&valid=05aa12e9",
-  "https://www.mafiaway.nl/attack.php?x=Pip&valid=05aa12e9",
-  "https://www.mafiaway.nl/attack.php?x=Beautifly&valid=05aa12e9",
-  "https://www.mafiaway.nl/attack.php?x=Kurze&valid=05aa12e9",
-  "https://www.mafiaway.nl/attack.php?x=Bigidagoe&valid=05aa12e9",
-  "https://www.mafiaway.nl/attack.php?x=Jawbone&valid=05aa12e9",
-  "https://www.mafiaway.nl/attack.php?x=Rikkieej&valid=05aa12e9",
-  "https://www.mafiaway.nl/attack.php?x=Angelicaos&valid=05aa12e9",
-  "https://www.mafiaway.nl/attack.php?x=Donimperiale&valid=05aa12e9",
-  "https://www.mafiaway.nl/attack.php?x=Soep&valid=05aa12e9",
-  "https://www.mafiaway.nl/attack.php?x=Dastixy&valid=05aa12e9",
-  "https://www.mafiaway.nl/attack.php?x=Coentjuhh&valid=05aa12e9",
-  "https://www.mafiaway.nl/attack.php?x=Sylvionl&valid=05aa12e9",
-  "https://www.mafiaway.nl/attack.php?x=Ciskederat&valid=05aa12e9",
-  "https://www.mafiaway.nl/attack.php?x=Bordobereli&valid=05aa12e9",
-  "https://www.mafiaway.nl/attack.php?x=Iamflip&valid=05aa12e9",
-  "https://www.mafiaway.nl/attack.php?x=Eminam&valid=05aa12e9",
-  "https://www.mafiaway.nl/attack.php?x=Dellemino&valid=05aa12e9",
-  "https://www.mafiaway.nl/attack.php?x=Opjutter&valid=05aa12e9",
-  "https://www.mafiaway.nl/attack.php?x=Rae&valid=05aa12e9",
-  "https://www.mafiaway.nl/attack.php?x=Wentelteef&valid=05aa12e9",
-  "https://www.mafiaway.nl/attack.php?x=Miginl&valid=05aa12e9",
-  "https://www.mafiaway.nl/attack.php?x=Koekkievos&valid=05aa12e9",
-  "https://www.mafiaway.nl/attack.php?x=Igris&valid=05aa12e9",
-  "https://www.mafiaway.nl/attack.php?x=Donbrisket&valid=05aa12e9",
-  "https://www.mafiaway.nl/attack.php?x=Gucci&valid=05aa12e9",
-  "https://www.mafiaway.nl/attack.php?x=Granny&valid=05aa12e9",
-  "https://www.mafiaway.nl/attack.php?x=Tranquille&valid=05aa12e9",
-  "https://www.mafiaway.nl/attack.php?x=Assebian&valid=05aa12e9",
-  "https://www.mafiaway.nl/attack.php?x=Maffedoos&valid=05aa12e9",
-  "https://www.mafiaway.nl/attack.php?x=Aronhafc&valid=05aa12e9",
-  "https://www.mafiaway.nl/attack.php?x=Knaller&valid=05aa12e9",
-  "https://www.mafiaway.nl/attack.php?x=Adonulzeventig&valid=05aa12e9",
-  "https://www.mafiaway.nl/attack.php?x=Kleinetijger&valid=05aa12e9",
-  "https://www.mafiaway.nl/attack.php?x=Ash&valid=05aa12e9",
-  "https://www.mafiaway.nl/attack.php?x=Validious&valid=05aa12e9",
-  "https://www.mafiaway.nl/attack.php?x=Davian&valid=05aa12e9",
-  "https://www.mafiaway.nl/attack.php?x=Murfienl&valid=05aa12e9",
-  "https://www.mafiaway.nl/attack.php?x=Desinteresse&valid=05aa12e9",
-  "https://www.mafiaway.nl/attack.php?x=Letsmoneytalk&valid=05aa12e9",
-  "https://www.mafiaway.nl/attack.php?x=Zeke&valid=05aa12e9",
-  "https://www.mafiaway.nl/attack.php?x=Sunshine&valid=05aa12e9",
-  "https://www.mafiaway.nl/attack.php?x=Corky&valid=05aa12e9",
-  "https://www.mafiaway.nl/attack.php?x=Locodevil&valid=05aa12e9",
-  "https://www.mafiaway.nl/attack.php?x=Tehpirateslife&valid=05aa12e9",
-  "https://www.mafiaway.nl/attack.php?x=Goentje&valid=05aa12e9",
-  "https://www.mafiaway.nl/attack.php?x=Sinitboy ster&valid=05aa12e9",
-  "https://www.mafiaway.nl/attack.php?x=Melisster&valid=05aa12e9",
-  "https://www.mafiaway.nl/attack.php?x=Mystic&valid=05aa12e9",
-  "https://www.mafiaway.nl/attack.php?x=Gerritkiller&valid=05aa12e9",
-  "https://www.mafiaway.nl/attack.php?x=Octopusprime&valid=05aa12e9",
-  "https://www.mafiaway.nl/attack.php?x=Joodje&valid=05aa12e9",
-  "https://www.mafiaway.nl/attack.php?x=Virtuoso&valid=05aa12e9",
-  "https://www.mafiaway.nl/attack.php?x=Erzo&valid=05aa12e9",
-  "https://www.mafiaway.nl/attack.php?x=Mandalorian ster&valid=05aa12e9",
-  "https://www.mafiaway.nl/attack.php?x=Dutchviking&valid=05aa12e9",
-  "https://www.mafiaway.nl/attack.php?x=Tastefull&valid=05aa12e9",
-  "https://www.mafiaway.nl/attack.php?x=Dampsy&valid=05aa12e9",
-  "https://www.mafiaway.nl/attack.php?x=Arcane&valid=05aa12e9",
-  "https://www.mafiaway.nl/attack.php?x=Jdgirl&valid=05aa12e9",
-  "https://www.mafiaway.nl/attack.php?x=Shattoe&valid=05aa12e9",
-  "https://www.mafiaway.nl/attack.php?x=Dutchpanda&valid=05aa12e9",
-  "https://www.mafiaway.nl/attack.php?x=Huntsman&valid=05aa12e9",
-  "https://www.mafiaway.nl/attack.php?x=Aopox&valid=05aa12e9",
-  "https://www.mafiaway.nl/attack.php?x=Divinity&valid=05aa12e9",
-  "https://www.mafiaway.nl/attack.php?x=Djgast&valid=05aa12e9",
-  "https://www.mafiaway.nl/attack.php?x=Whitesnowflake&valid=05aa12e9",
-  "https://www.mafiaway.nl/attack.php?x=Killingj&valid=05aa12e9",
-  "https://www.mafiaway.nl/attack.php?x=Lockout&valid=05aa12e9",
-  "https://www.mafiaway.nl/attack.php?x=Irradiate&valid=05aa12e9",
-  "https://www.mafiaway.nl/attack.php?x=Laetitia&valid=05aa12e9",
-  "https://www.mafiaway.nl/attack.php?x=Hosselmossel&valid=05aa12e9",
-  "https://www.mafiaway.nl/attack.php?x=Juice&valid=05aa12e9",
-  "https://www.mafiaway.nl/attack.php?x=Wesleyb&valid=05aa12e9",
-  "https://www.mafiaway.nl/attack.php?x=Kuroten&valid=05aa12e9",
-  "https://www.mafiaway.nl/attack.php?x=Epson&valid=05aa12e9",
-  "https://www.mafiaway.nl/attack.php?x=Barry&valid=05aa12e9",
-  "https://www.mafiaway.nl/attack.php?x=Gekkigheid&valid=05aa12e9",
-  "https://www.mafiaway.nl/attack.php?x=Jme&valid=05aa12e9",
-  "https://www.mafiaway.nl/attack.php?x=Soberano&valid=05aa12e9",
-  "https://www.mafiaway.nl/attack.php?x=Phantom&valid=05aa12e9",
-  "https://www.mafiaway.nl/attack.php?x=Maestro&valid=05aa12e9",
-  "https://www.mafiaway.nl/attack.php?x=Chimera&valid=05aa12e9",
-  "https://www.mafiaway.nl/attack.php?x=Seppblatter&valid=05aa12e9",
-  "https://www.mafiaway.nl/attack.php?x=Mefisto&valid=05aa12e9",
-  "https://www.mafiaway.nl/attack.php?x=Moony&valid=05aa12e9",
-  "https://www.mafiaway.nl/attack.php?x=Extasis&valid=05aa12e9",
-  "https://www.mafiaway.nl/attack.php?x=Pablooo&valid=05aa12e9",
-  "https://www.mafiaway.nl/attack.php?x=Didibeast&valid=05aa12e9",
-  "https://www.mafiaway.nl/attack.php?x=Carnefice&valid=05aa12e9",
-  "https://www.mafiaway.nl/attack.php?x=Shadowreaper&valid=05aa12e9",
-  "https://www.mafiaway.nl/attack.php?x=Itslaupau&valid=05aa12e9",
-  "https://www.mafiaway.nl/attack.php?x=Dertelll&valid=05aa12e9",
-  "https://www.mafiaway.nl/attack.php?x=Highpope&valid=05aa12e9",
-  "https://www.mafiaway.nl/attack.php?x=Kimmetjuh&valid=05aa12e9",
-  "https://www.mafiaway.nl/attack.php?x=Gerkeftw&valid=05aa12e9",
-  "https://www.mafiaway.nl/attack.php?x=Vintage&valid=05aa12e9",
-  "https://www.mafiaway.nl/attack.php?x=Angelke&valid=05aa12e9",
-  "https://www.mafiaway.nl/attack.php?x=Uncaged&valid=05aa12e9",
-  "https://www.mafiaway.nl/attack.php?x=Roylach&valid=05aa12e9",
-  "https://www.mafiaway.nl/attack.php?x=Jappie&valid=05aa12e9",
-  "https://www.mafiaway.nl/attack.php?x=Eniesee&valid=05aa12e9",
-  "https://www.mafiaway.nl/attack.php?x=Luther&valid=05aa12e9",
-  "https://www.mafiaway.nl/attack.php?x=Gangleader&valid=05aa12e9",
-  "https://www.mafiaway.nl/attack.php?x=Saayko&valid=05aa12e9",
-  "https://www.mafiaway.nl/attack.php?x=Juno&valid=05aa12e9",
-  "https://www.mafiaway.nl/attack.php?x=Misssnowy&valid=05aa12e9",
-  "https://www.mafiaway.nl/attack.php?x=Killerscar&valid=05aa12e9",
-  "https://www.mafiaway.nl/attack.php?x=Lupara&valid=05aa12e9",
-  "https://www.mafiaway.nl/attack.php?x=Reldwerg&valid=05aa12e9",
-  "https://www.mafiaway.nl/attack.php?x=Tkzone&valid=05aa12e9",
-  "https://www.mafiaway.nl/attack.php?x=Addams&valid=05aa12e9",
-  "https://www.mafiaway.nl/attack.php?x=Chocopasta&valid=05aa12e9",
-  "https://www.mafiaway.nl/attack.php?x=Aapje&valid=05aa12e9",
-  "https://www.mafiaway.nl/attack.php?x=Ronaldooke&valid=05aa12e9",
-  "https://www.mafiaway.nl/attack.php?x=Diamondbitch&valid=05aa12e9",
-  "https://www.mafiaway.nl/attack.php?x=Eminov&valid=05aa12e9",
-  "https://www.mafiaway.nl/attack.php?x=Hobbeldruif&valid=05aa12e9",
-  "https://www.mafiaway.nl/attack.php?x=Teddybigs&valid=05aa12e9",
-  "https://www.mafiaway.nl/attack.php?x=Eusebio&valid=05aa12e9",
-  "https://www.mafiaway.nl/attack.php?x=Zenn&valid=05aa12e9",
-  "https://www.mafiaway.nl/attack.php?x=Kurdonl&valid=05aa12e9",
-  "https://www.mafiaway.nl/attack.php?x=Pimdecavia&valid=05aa12e9",
-  "https://www.mafiaway.nl/attack.php?x=Ryuga&valid=05aa12e9"]},
-    {name:"Nog in te vullen 2", sites:["https://boef.nl/attack/174713","https://boef.nl/attack/174714"]},
-    {name:"Nog in te vullen 3", sites:["https://www.mafiaway.nl/attack.php?x=Clymene&valid=05aa12e9",
-  "https://www.mafiaway.nl/attack.php?x=Pimdecavia&valid=05aa12e9",
-  "https://www.mafiaway.nl/attack.php?x=Ikki&valid=05aa12e9",
-  "https://www.mafiaway.nl/attack.php?x=Taksiii&valid=05aa12e9",
-  "https://www.mafiaway.nl/attack.php?x=Dutchz&valid=05aa12e9",
-  "https://www.mafiaway.nl/attack.php?x=Sundee&valid=05aa12e9",
-  "https://www.mafiaway.nl/attack.php?x=Deathstar&valid=05aa12e9",
-  "https://www.mafiaway.nl/attack.php?x=Soldierdon&valid=05aa12e9",
-  "https://www.mafiaway.nl/attack.php?x=Ratsok&valid=05aa12e9",
-  "https://www.mafiaway.nl/attack.php?x=Crypto&valid=05aa12e9",
-  "https://www.mafiaway.nl/attack.php?x=Wimpie&valid=05aa12e9",
-  "https://www.mafiaway.nl/attack.php?x=Farrug ster&valid=05aa12e9",
-  "https://www.mafiaway.nl/attack.php?x=Almiej&valid=05aa12e9",
-  "https://www.mafiaway.nl/attack.php?x=Mercy&valid=05aa12e9",
-  "https://www.mafiaway.nl/attack.php?x=Lorido&valid=05aa12e9",
-  "https://www.mafiaway.nl/attack.php?x=Traitor&valid=05aa12e9",
-  "https://www.mafiaway.nl/attack.php?x=Jamalito&valid=05aa12e9",
-  "https://www.mafiaway.nl/attack.php?x=Ticker&valid=05aa12e9",
-  "https://www.mafiaway.nl/attack.php?x=Sydney&valid=05aa12e9",
-  "https://www.mafiaway.nl/attack.php?x=Bacon&valid=05aa12e9",
-  "https://www.mafiaway.nl/attack.php?x=Barto&valid=05aa12e9",
-  "https://www.mafiaway.nl/attack.php?x=Fendt&valid=05aa12e9",
-  "https://www.mafiaway.nl/attack.php?x=Retaliation&valid=05aa12e9",
-  "https://www.mafiaway.nl/attack.php?x=Godgood&valid=05aa12e9",
-  "https://www.mafiaway.nl/attack.php?x=Beepboop&valid=05aa12e9",
-  "https://www.mafiaway.nl/attack.php?x=Raulw&valid=05aa12e9",
-  "https://www.mafiaway.nl/attack.php?x=Zwoan&valid=05aa12e9",
-  "https://www.mafiaway.nl/attack.php?x=Xmaffiababe&valid=05aa12e9",
-  "https://www.mafiaway.nl/attack.php?x=Nergal&valid=05aa12e9",
-  "https://www.mafiaway.nl/attack.php?x=Chill&valid=05aa12e9",
-  "https://www.mafiaway.nl/attack.php?x=Awoogaa&valid=05aa12e9",
-  "https://www.mafiaway.nl/attack.php?x=Bountykillha&valid=05aa12e9",
-  "https://www.mafiaway.nl/attack.php?x=Reies&valid=05aa12e9",
-  "https://www.mafiaway.nl/attack.php?x=Rowinboyy&valid=05aa12e9",
-  "https://www.mafiaway.nl/attack.php?x=Bigprobs&valid=05aa12e9",
-  "https://www.mafiaway.nl/attack.php?x=Rugan&valid=05aa12e9",
-  "https://www.mafiaway.nl/attack.php?x=Mippy&valid=05aa12e9",
-  "https://www.mafiaway.nl/attack.php?x=Lenfoire&valid=05aa12e9",
-  "https://www.mafiaway.nl/attack.php?x=Gizmo&valid=05aa12e9",
-  "https://www.mafiaway.nl/attack.php?x=Amenadiel&valid=05aa12e9",
-  "https://www.mafiaway.nl/attack.php?x=Cap&valid=05aa12e9",
-  "https://www.mafiaway.nl/attack.php?x=Reydelsur&valid=05aa12e9",
-  "https://www.mafiaway.nl/attack.php?x=Mellow&valid=05aa12e9",
-  "https://www.mafiaway.nl/attack.php?x=Kimmetje&valid=05aa12e9",
-  "https://www.mafiaway.nl/attack.php?x=Yassii&valid=05aa12e9",
-  "https://www.mafiaway.nl/attack.php?x=Anxious&valid=05aa12e9",
-  "https://www.mafiaway.nl/attack.php?x=Thoff&valid=05aa12e9",
-  "https://www.mafiaway.nl/attack.php?x=Anoniem&valid=05aa12e9",
-  "https://www.mafiaway.nl/attack.php?x=Mocrobob&valid=05aa12e9",
-  "https://www.mafiaway.nl/attack.php?x=Mrmaikel&valid=05aa12e9",
-  "https://www.mafiaway.nl/attack.php?x=Destler&valid=05aa12e9",
-  "https://www.mafiaway.nl/attack.php?x=Oneshot&valid=05aa12e9",
-  "https://www.mafiaway.nl/attack.php?x=Osimhen&valid=05aa12e9",
-  "https://www.mafiaway.nl/attack.php?x=Grote&valid=05aa12e9",
-  "https://www.mafiaway.nl/attack.php?x=Streetracer&valid=05aa12e9",
-  "https://www.mafiaway.nl/attack.php?x=Castlefest&valid=05aa12e9",
-  "https://www.mafiaway.nl/attack.php?x=Erikdenbesten&valid=05aa12e9",
-  "https://www.mafiaway.nl/attack.php?x=Vecna&valid=05aa12e9",
-  "https://www.mafiaway.nl/attack.php?x=Termoat&valid=05aa12e9",
-  "https://www.mafiaway.nl/attack.php?x=Jorn&valid=05aa12e9",
-  "https://www.mafiaway.nl/attack.php?x=Dknl&valid=05aa12e9",
-  "https://www.mafiaway.nl/attack.php?x=Jakej&valid=05aa12e9",
-  "https://www.mafiaway.nl/attack.php?x=Killrjflex&valid=05aa12e9",
-  "https://www.mafiaway.nl/attack.php?x=Iquintenzzz&valid=05aa12e9",
-  "https://www.mafiaway.nl/attack.php?x=Mrshambles&valid=05aa12e9",
-  "https://www.mafiaway.nl/attack.php?x=Miloutje&valid=05aa12e9",
-  "https://www.mafiaway.nl/attack.php?x=Speed&valid=05aa12e9",
-  "https://www.mafiaway.nl/attack.php?x=Sharkey&valid=05aa12e9",
-  "https://www.mafiaway.nl/attack.php?x=Flauwenaam&valid=05aa12e9",
-  "https://www.mafiaway.nl/attack.php?x=Rosalia&valid=05aa12e9",
-  "https://www.mafiaway.nl/attack.php?x=Johino&valid=05aa12e9",
-  "https://www.mafiaway.nl/attack.php?x=Samuraijack&valid=05aa12e9",
-  "https://www.mafiaway.nl/attack.php?x=Clarke&valid=05aa12e9",
-  "https://www.mafiaway.nl/attack.php?x=Muzzy&valid=05aa12e9",
-  "https://www.mafiaway.nl/attack.php?x=Bloedlink&valid=05aa12e9",
-  "https://www.mafiaway.nl/attack.php?x=Ladyddalicja&valid=05aa12e9",
-  "https://www.mafiaway.nl/attack.php?x=Mientje&valid=05aa12e9",
-  "https://www.mafiaway.nl/attack.php?x=Bonqert&valid=05aa12e9",
-  "https://www.mafiaway.nl/attack.php?x=Kjen&valid=05aa12e9",
-  "https://www.mafiaway.nl/attack.php?x=Tulio&valid=05aa12e9",
-  "https://www.mafiaway.nl/attack.php?x=Crazyboy&valid=05aa12e9",
-  "https://www.mafiaway.nl/attack.php?x=Essiebessi&valid=05aa12e9",
-  "https://www.mafiaway.nl/attack.php?x=Shinchan&valid=05aa12e9",
-  "https://www.mafiaway.nl/attack.php?x=Queenofhell&valid=05aa12e9",
-  "https://www.mafiaway.nl/attack.php?x=Afrisianguy&valid=05aa12e9",
-  "https://www.mafiaway.nl/attack.php?x=Arcade&valid=05aa12e9",
-  "https://www.mafiaway.nl/attack.php?x=Flufster&valid=05aa12e9",
-  "https://www.mafiaway.nl/attack.php?x=Mcmaster&valid=05aa12e9",
-  "https://www.mafiaway.nl/attack.php?x=Annoniem&valid=05aa12e9",
-  "https://www.mafiaway.nl/attack.php?x=Garduna&valid=05aa12e9",
-  "https://www.mafiaway.nl/attack.php?x=Descartes&valid=05aa12e9",
-  "https://www.mafiaway.nl/attack.php?x=Dystinct&valid=05aa12e9",
-  "https://www.mafiaway.nl/attack.php?x=Stukvlaai&valid=05aa12e9",
-  "https://www.mafiaway.nl/attack.php?x=Vexor&valid=05aa12e9",
-  "https://www.mafiaway.nl/attack.php?x=Diekieboy&valid=05aa12e9",
-  "https://www.mafiaway.nl/attack.php?x=Fuisligo&valid=05aa12e9",
-  "https://www.mafiaway.nl/attack.php?x=Kooiker&valid=05aa12e9",
-  "https://www.mafiaway.nl/attack.php?x=Dopeking&valid=05aa12e9",
-  "https://www.mafiaway.nl/attack.php?x=Mcbc&valid=05aa12e9",
-  "https://www.mafiaway.nl/attack.php?x=Ballas&valid=05aa12e9",
-  "https://www.mafiaway.nl/attack.php?x=Haunter&valid=05aa12e9",
-  "https://www.mafiaway.nl/attack.php?x=Zumadembe&valid=05aa12e9",
-  "https://www.mafiaway.nl/attack.php?x=Miauw&valid=05aa12e9",
-  "https://www.mafiaway.nl/attack.php?x=Stampertje&valid=05aa12e9",
-  "https://www.mafiaway.nl/attack.php?x=Dre&valid=05aa12e9",
-  "https://www.mafiaway.nl/attack.php?x=Daa&valid=05aa12e9",
-  "https://www.mafiaway.nl/attack.php?x=Mrlukario&valid=05aa12e9",
-  "https://www.mafiaway.nl/attack.php?x=Mewtwo&valid=05aa12e9",
-  "https://www.mafiaway.nl/attack.php?x=Holsteijn&valid=05aa12e9",
-  "https://www.mafiaway.nl/attack.php?x=Ryza&valid=05aa12e9",
-  "https://www.mafiaway.nl/attack.php?x=Goldengunz&valid=05aa12e9",
-  "https://www.mafiaway.nl/attack.php?x=Maybachdbaron&valid=05aa12e9",
-  "https://www.mafiaway.nl/attack.php?x=Theblase&valid=05aa12e9",
-  "https://www.mafiaway.nl/attack.php?x=Jokerwhahaha&valid=05aa12e9",
-  "https://www.mafiaway.nl/attack.php?x=Darkarrows&valid=05aa12e9",
-  "https://www.mafiaway.nl/attack.php?x=Marciossi&valid=05aa12e9",
-  "https://www.mafiaway.nl/attack.php?x=Fadde&valid=05aa12e9",
-  "https://www.mafiaway.nl/attack.php?x=Sottocapo&valid=05aa12e9",
-  "https://www.mafiaway.nl/attack.php?x=Doodshoofd&valid=05aa12e9",
-  "https://www.mafiaway.nl/attack.php?x=Vani&valid=05aa12e9"]}
- 
-  ],
-  cat2:[
-    {name:"Kechs voor CrashOut spelers.", sites:["https://boef.nl/Mr69", "https://boef.nl/rowena", "https://boef.nl/kipcbs", "https://boef.nl/Xiomara", "https://boef.nl/Justinfcu030", "https://boef.nl/Bossiee", "https://boef.nl/TOP-RIPPER",
-		"https://boef.nl/Langemaniac", "https://boef.nl/Scarface", "https://boef.nl/Faye", "https://boef.nl/Darkbella", "https://boef.nl/Koppig", "https://boef.nl/Pocahontas", "https://boef.nl/Syze", "https://boef.nl/Nemzzz"]},
-    {name:"Missie tool: Bitches zoeken. (130x)", sites:["https://bulletstarclassic.nl/bitch/Zekl3",
-"https://bulletstarclassic.nl/bitch/Zennick",
-"https://bulletstarclassic.nl/bitch/Zentible",
-"https://bulletstarclassic.nl/bitch/Zer0pl0x",
-"https://bulletstarclassic.nl/bitch/Zero",
-"https://bulletstarclassic.nl/bitch/zeus",
-"https://bulletstarclassic.nl/bitch/zigeunertje0",
-"https://bulletstarclassic.nl/bitch/Ziisu",
-"https://bulletstarclassic.nl/bitch/Zina",
-"https://bulletstarclassic.nl/bitch/Zita",
-"https://bulletstarclassic.nl/bitch/Zk2060",
-"https://bulletstarclassic.nl/bitch/zn-eigen-moeder",
-"https://bulletstarclassic.nl/bitch/Zotteke-",
-"https://bulletstarclassic.nl/bitch/Zotteke_",
-"https://bulletstarclassic.nl/bitch/Zustertje",
-"https://bulletstarclassic.nl/bitch/ZwarteJoop",
-"https://bulletstarclassic.nl/bitch/Zwarteweduwe",
-"https://bulletstarclassic.nl/bitch/Zylflix",
-"https://bulletstarclassic.nl/bitch/Wtheking",
-"https://bulletstarclassic.nl/bitch/Xclna",
-"https://bulletstarclassic.nl/bitch/Xerzex",
-"https://bulletstarclassic.nl/bitch/xjeroonex",
-"https://bulletstarclassic.nl/bitch/Xliooodw",
-"https://bulletstarclassic.nl/bitch/Xlynniee",
-"https://bulletstarclassic.nl/bitch/xmaris",
-"https://bulletstarclassic.nl/bitch/xmoniquee",
-"https://bulletstarclassic.nl/bitch/Xopxmjh",
-"https://bulletstarclassic.nl/bitch/XRISEAGAINSTX",
-"https://bulletstarclassic.nl/bitch/XRositaX",
-"https://bulletstarclassic.nl/bitch/Yasmina",
-"https://bulletstarclassic.nl/index.php?p=crimes",
-"https://bulletstarclassic.nl/index.php?p=algemeen-ziekenhuis",														
-"https://bulletstarclassic.nl/bitch/Yellowblue",
-"https://bulletstarclassic.nl/bitch/Yeti",
-"https://bulletstarclassic.nl/bitch/YoPopa",
-"https://bulletstarclassic.nl/bitch/Youss",
-"https://bulletstarclassic.nl/bitch/Yucatan",
-"https://bulletstarclassic.nl/bitch/Zaadloos",
-"https://bulletstarclassic.nl/bitch/zatre",
-"https://bulletstarclassic.nl/bitch/Zeb010",
-"https://bulletstarclassic.nl/bitch/vodyyyy",
-"https://bulletstarclassic.nl/bitch/Voorjoueenvraag",
-"https://bulletstarclassic.nl/bitch/W1ZRRD",
-"https://bulletstarclassic.nl/bitch/waeb89",
-"https://bulletstarclassic.nl/bitch/walker",
-"https://bulletstarclassic.nl/bitch/wally2508",
-"https://bulletstarclassic.nl/bitch/WalterWhite",
-"https://bulletstarclassic.nl/bitch/WBVJan",
-"https://bulletstarclassic.nl/bitch/Weskepablo",
-"https://bulletstarclassic.nl/bitch/WhatEver",
-"https://bulletstarclassic.nl/bitch/White-Tiger",
-"https://bulletstarclassic.nl/bitch/Whoopper",
-"https://bulletstarclassic.nl/bitch/whynut",
-"https://bulletstarclassic.nl/bitch/Wickedwitch",
-"https://bulletstarclassic.nl/bitch/Wiljan",
-"https://bulletstarclassic.nl/bitch/WillyWonka",
-"https://bulletstarclassic.nl/bitch/Wiseguy",
-"https://bulletstarclassic.nl/bitch/WOLF",
-"https://bulletstarclassic.nl/bitch/Wolfje27",
-"https://bulletstarclassic.nl/bitch/WonderWeiss",
-"https://bulletstarclassic.nl/bitch/Twixbeer",
-"https://bulletstarclassic.nl/index.php?p=voertuigen-stelen",													
-"https://bulletstarclassic.nl/bitch/Ufopiloot",
-"https://bulletstarclassic.nl/bitch/UhtreeD",
-"https://bulletstarclassic.nl/index.php?p=crimes",
-"https://bulletstarclassic.nl/index.php?p=algemeen-ziekenhuis",														
-"https://bulletstarclassic.nl/bitch/uitBlinker",
-"https://bulletstarclassic.nl/bitch/Unknown",
-"https://bulletstarclassic.nl/bitch/unseensavage",
-"https://bulletstarclassic.nl/bitch/Vaassen",
-"https://bulletstarclassic.nl/bitch/Vea_",
-"https://bulletstarclassic.nl/bitch/Vedetta",
-"https://bulletstarclassic.nl/bitch/velrosa",
-"https://bulletstarclassic.nl/bitch/Veltrix",
-"https://bulletstarclassic.nl/bitch/Vendeza",
-"https://bulletstarclassic.nl/bitch/Venom",
-"https://bulletstarclassic.nl/bitch/Verrader",
-"https://bulletstarclassic.nl/bitch/Veuleke",
-"https://bulletstarclassic.nl/bitch/Victoria",
-"https://bulletstarclassic.nl/bitch/ViperDW",
-"https://bulletstarclassic.nl/bitch/Vitesseboy7",
-"https://bulletstarclassic.nl/bitch/Vitodoncorleone",
-"https://bulletstarclassic.nl/bitch/VladimirPoetin",
-"https://bulletstarclassic.nl/bitch/Thestriper",
-"https://bulletstarclassic.nl/bitch/The_Boss",
-"https://bulletstarclassic.nl/bitch/The_Undertaker",
-"https://bulletstarclassic.nl/bitch/ThomasShelby",
-"https://bulletstarclassic.nl/bitch/tijn033",
-"https://bulletstarclassic.nl/bitch/Tildy",
-"https://bulletstarclassic.nl/bitch/timotsjoek",
-"https://bulletstarclassic.nl/bitch/tjabo999",
-"https://bulletstarclassic.nl/bitch/Tjaico",
-"https://bulletstarclassic.nl/bitch/Tjapito",
-"https://bulletstarclassic.nl/bitch/tocks",
-"https://bulletstarclassic.nl/bitch/Tofast",
-"https://bulletstarclassic.nl/bitch/Tomb931",
-"https://bulletstarclassic.nl/bitch/Tommy",
-"https://bulletstarclassic.nl/index.php?p=crimes",
-"https://bulletstarclassic.nl/index.php?p=algemeen-ziekenhuis",														
-"https://bulletstarclassic.nl/bitch/tommygun666X",
-"https://bulletstarclassic.nl/bitch/TommyVercetti",
-"https://bulletstarclassic.nl/bitch/Topsecret",
-"https://bulletstarclassic.nl/bitch/toto",
-"https://bulletstarclassic.nl/bitch/Tunsii23",
-"https://bulletstarclassic.nl/bitch/Tupac_Shakur",
-"https://bulletstarclassic.nl/bitch/terrorspike",
-"https://bulletstarclassic.nl/bitch/testest",
-"https://bulletstarclassic.nl/bitch/ThcR",
-"https://bulletstarclassic.nl/bitch/The-Joker",
-"https://bulletstarclassic.nl/bitch/the-ripper",
-"https://bulletstarclassic.nl/bitch/the-rock",
-"https://bulletstarclassic.nl/bitch/THE3XILLED",
-"https://bulletstarclassic.nl/bitch/theCaptain",
-"https://bulletstarclassic.nl/bitch/TheChosenOne",
-"https://bulletstarclassic.nl/bitch/TheFatPurpleGuu",
-"https://bulletstarclassic.nl/bitch/TheGoat",
-"https://bulletstarclassic.nl/bitch/Thehottwink",
-"https://bulletstarclassic.nl/bitch/TheJokeIsOnYou",
-"https://bulletstarclassic.nl/bitch/TheKey045",
-"https://bulletstarclassic.nl/bitch/TheKillerClown",
-"https://bulletstarclassic.nl/bitch/TheLord",
-"https://bulletstarclassic.nl/index.php?p=voertuigen-stelen",														
-"https://bulletstarclassic.nl/bitch/TheOnlyRealOne",
-"https://bulletstarclassic.nl/bitch/TheReason",
-"https://bulletstarclassic.nl/bitch/TheRichAunt",
-"https://bulletstarclassic.nl/bitch/TheSaint",
-"https://bulletstarclassic.nl/bitch/Superkiller",
-"https://bulletstarclassic.nl/bitch/SupersaiyanGoku",
-"https://bulletstarclassic.nl/bitch/Susanne21",
-"https://bulletstarclassic.nl/bitch/svc",
-"https://bulletstarclassic.nl/bitch/SwaffelBrigade",
-"https://bulletstarclassic.nl/index.php?p=crimes",
-"https://bulletstarclassic.nl/index.php?p=algemeen-ziekenhuis",														
-"https://bulletstarclassic.nl/bitch/swalc",
-"https://bulletstarclassic.nl/bitch/sweeps",
-"https://bulletstarclassic.nl/bitch/SweetLady",
-"https://bulletstarclassic.nl/bitch/Syrix",
-"https://bulletstarclassic.nl/bitch/T-Stunna",
-"https://bulletstarclassic.nl/bitch/Tanja",
-"https://bulletstarclassic.nl/bitch/Tarabruinenn",
-"https://bulletstarclassic.nl/bitch/Tarantula",
-"https://bulletstarclassic.nl/bitch/tarzan",
-"https://bulletstarclassic.nl/bitch/Tastefull",
-"https://bulletstarclassic.nl/bitch/Tate",
-"https://bulletstarclassic.nl/bitch/Tatiii1990",
-"https://bulletstarclassic.nl/bitch/Tatta",
-"https://bulletstarclassic.nl/bitch/TERROR",
-"https://bulletstarclassic.nl/bitch/Terroriana",
-"https://bulletstarclassic.nl/bitch/Spopovich",
-"https://bulletstarclassic.nl/bitch/Squeaky",
-"https://bulletstarclassic.nl/bitch/Stalonne",
-"https://bulletstarclassic.nl/bitch/Stamina",
-"https://bulletstarclassic.nl/bitch/Stanno",
-"https://bulletstarclassic.nl/bitch/Steve1309",
-"https://bulletstarclassic.nl/bitch/STEXX",
-"https://bulletstarclassic.nl/bitch/StickyNicky",
-"https://bulletstarclassic.nl/bitch/Stitch",
-"https://bulletstarclassic.nl/bitch/Stonyblair",
-"https://bulletstarclassic.nl/bitch/stracci",
-"https://bulletstarclassic.nl/bitch/Strawberry",
-"https://bulletstarclassic.nl/bitch/Strawhats",
-"https://bulletstarclassic.nl/bitch/Streek",
-"https://bulletstarclassic.nl/bitch/StreetKingZ92",
-"https://bulletstarclassic.nl/bitch/Stylius",
-"https://bulletstarclassic.nl/index.php?p=crimes",
-"https://bulletstarclassic.nl/index.php?p=algemeen-ziekenhuis",															
-"https://bulletstarclassic.nl/bitch/Sucukton",
-"https://bulletstarclassic.nl/bitch/Sucukton-42",
-"https://bulletstarclassic.nl/bitch/Suitt072",
-"https://bulletstarclassic.nl/bitch/Super-Mario",
-"https://bulletstarclassic.nl/bitch/Smacks1337",
-"https://bulletstarclassic.nl/bitch/SmaikelS",
-"https://bulletstarclassic.nl/bitch/smash-it",
-"https://bulletstarclassic.nl/bitch/Smok3yDutch87",
-"https://bulletstarclassic.nl/bitch/Snappie",
-"https://bulletstarclassic.nl/bitch/snelheid100",
-"https://bulletstarclassic.nl/bitch/Snippykayee",
-"https://bulletstarclassic.nl/bitch/snuifduif010",
-"https://bulletstarclassic.nl/bitch/so3120pe",
-"https://bulletstarclassic.nl/bitch/Sofievl",
-"https://bulletstarclassic.nl/bitch/Sooosss",
-"https://bulletstarclassic.nl/index.php?p=voertuigen-stelen",														
-"https://bulletstarclassic.nl/bitch/Sophie",
-"https://bulletstarclassic.nl/bitch/sosa",
-"https://bulletstarclassic.nl/bitch/Souls",
-"https://bulletstarclassic.nl/bitch/Spekje",
-"https://bulletstarclassic.nl/bitch/Spider",
-"https://bulletstarclassic.nl/bitch/Spits9",
-"https://bulletstarclassic.nl/bitch/Spitsie",
-"https://bulletstarclassic.nl/bitch/Spongebob",
-"https://bulletstarclassic.nl/bitch/Spookje"
-"https://bulletstarclassic.nl/bitch/QueenOfTheSouth",
-"https://bulletstarclassic.nl/bitch/QueenV",
-"https://bulletstarclassic.nl/bitch/Queen_M",
-"https://bulletstarclassic.nl/bitch/Quincent076",
-"https://bulletstarclassic.nl/bitch/R00T",
-"https://bulletstarclassic.nl/bitch/Raflesia",
-"https://bulletstarclassic.nl/bitch/Raitaitai",
-"https://bulletstarclassic.nl/index.php?p=crimes",
-"https://bulletstarclassic.nl/index.php?p=algemeen-ziekenhuis",															
-"https://bulletstarclassic.nl/bitch/Rambo",
-"https://bulletstarclassic.nl/bitch/Rambo0345",
-"https://bulletstarclassic.nl/bitch/Ramonh1993",
-"https://bulletstarclassic.nl/bitch/Rampagenl",
-"https://bulletstarclassic.nl/bitch/Randykontebonker",
-"https://bulletstarclassic.nl/bitch/RaNisa",
-"https://bulletstarclassic.nl/bitch/Rapunzel",
-"https://bulletstarclassic.nl/bitch/Razouki",
-"https://bulletstarclassic.nl/bitch/RebelDutchie",
-"https://bulletstarclassic.nl/bitch/Red",
-"https://bulletstarclassic.nl/bitch/Redband94",
-"https://bulletstarclassic.nl/bitch/Reddington",
-"https://bulletstarclassic.nl/bitch/RedEyeOMG",
-"https://bulletstarclassic.nl/bitch/plugggg",
-"https://bulletstarclassic.nl/bitch/Pocahontas",
-"https://bulletstarclassic.nl/bitch/PoisonIvy",
-"https://bulletstarclassic.nl/bitch/Pokerface2you",
-"https://bulletstarclassic.nl/bitch/Polderman",
-"https://bulletstarclassic.nl/bitch/ppd-owner",
-"https://bulletstarclassic.nl/bitch/Predator",
-"https://bulletstarclassic.nl/bitch/Pressy1080",
-"https://bulletstarclassic.nl/bitch/PrettyPink",
-"https://bulletstarclassic.nl/bitch/PrinsMario",
-"https://bulletstarclassic.nl/bitch/Prissx15",
-"https://bulletstarclassic.nl/bitch/Produtchson999",
-"https://bulletstarclassic.nl/bitch/proffesional",
-"https://bulletstarclassic.nl/bitch/Prophet",
-"https://bulletstarclassic.nl/bitch/Pulp",
-"https://bulletstarclassic.nl/bitch/PurpleHaze",
-"https://bulletstarclassic.nl/bitch/Purpp",
-"https://bulletstarclassic.nl/bitch/PushKonijn",
-"https://bulletstarclassic.nl/index.php?p=crimes",
-"https://bulletstarclassic.nl/index.php?p=algemeen-ziekenhuis",															
-"https://bulletstarclassic.nl/bitch/QueenElsa",
-"https://bulletstarclassic.nl/bitch/QueenK",
-"https://bulletstarclassic.nl/bitch/OpZnHondjes",
-"https://bulletstarclassic.nl/bitch/ownag3r",
-"https://bulletstarclassic.nl/bitch/Ozzy",
-"https://bulletstarclassic.nl/bitch/paardje100",
-"https://bulletstarclassic.nl/bitch/Palestina",
-"https://bulletstarclassic.nl/bitch/Panterpoesje",
-"https://bulletstarclassic.nl/index.php?p=voertuigen-stelen",														
-"https://bulletstarclassic.nl/bitch/parraboyherre",
-"https://bulletstarclassic.nl/bitch/Patron",
-"https://bulletstarclassic.nl/bitch/PauperKabouter",
-"https://bulletstarclassic.nl/bitch/Peck",
-"https://bulletstarclassic.nl/bitch/Pegasus",
-"https://bulletstarclassic.nl/bitch/Peno",
-"https://bulletstarclassic.nl/bitch/persephone",
-"https://bulletstarclassic.nl/bitch/Phoenix",
-"https://bulletstarclassic.nl/bitch/PickThaLock",
-"https://bulletstarclassic.nl/bitch/Pietertje",
-"https://bulletstarclassic.nl/bitch/Pinkstarr",
-"https://bulletstarclassic.nl/bitch/Pinpaco",
-"https://bulletstarclassic.nl/bitch/Pipapannenkoek",
-"https://bulletstarclassic.nl/bitch/PLOFKRAAK",
-"https://bulletstarclassic.nl/bitch/Noctarose",
-"https://bulletstarclassic.nl/bitch/Noirra",
-"https://bulletstarclassic.nl/bitch/Nokk",
-"https://bulletstarclassic.nl/bitch/NoMercy",
-"https://bulletstarclassic.nl/bitch/Noompjee",
-"https://bulletstarclassic.nl/bitch/NotLikeUs",
-"https://bulletstarclassic.nl/bitch/Nur",
-"https://bulletstarclassic.nl/bitch/Nyx",
-"https://bulletstarclassic.nl/bitch/Nyxa",
-"https://bulletstarclassic.nl/index.php?p=crimes",
-"https://bulletstarclassic.nl/index.php?p=algemeen-ziekenhuis",																																										
-"https://bulletstarclassic.nl/bitch/NyxWhisper",
-"https://bulletstarclassic.nl/bitch/o12",
-"https://bulletstarclassic.nl/bitch/Odysseus",
-"https://bulletstarclassic.nl/bitch/OGShadow",
-"https://bulletstarclassic.nl/bitch/oldambt",
-"https://bulletstarclassic.nl/bitch/oldghz",
-"https://bulletstarclassic.nl/bitch/omarelm",
-"https://bulletstarclassic.nl/bitch/Onderbroek",
-"https://bulletstarclassic.nl/bitch/onderenes38",
-"https://bulletstarclassic.nl/bitch/Ophelia",
-"https://bulletstarclassic.nl/bitch/Opperman"]},
-    {name:"Kechs voor de Wallen", sites:["https://boef.nl/baiis","https://boef.nl/Nexar","https://boef.nl/Nyro","https://boef.nl/gravity","https://boef.nl/Voltix","https://boef.nl/Specialist",
-"https://boef.nl/fozzie","https://boef.nl/Kryven","https://boef.nl/Drayko","https://boef.nl/Zynox","https://boef.nl/Syntra","https://boef.nl/kermit","https://boef.nl/Raxel","https://boef.nl/Veltox","https://boef.nl/Talonix","https://boef.nl/Virex",
-"https://boef.nl/Marcobo","https://boef.nl/Kairox","https://boef.nl/Vitoc","https://boef.nl/Brunanno","https://boef.nl/Lunex","https://boef.nl/lucciano","https://boef.nl/Vantor","https://boef.nl/Enzof","https://boef.nl/Rynex",
-"https://boef.nl/Dantescio","https://boef.nl/Stryve","https://boef.nl/Roccos","https://boef.nl/Exilon","https://boef.nl/Nicoty"]},
-    {name:"Kech Loop 4", sites:["https://boef.nl/kech7","https://boef.nl/kech8"]}
-  ],
-  cat3:[
-    {name:"Activiteiten TOOL", sites:["https://boef.nl/page/vehicles/steal", "https://boef.nl/page/crimes","https://boef.nl/page/money-raid", "https://boef.nl/page/hospital", "https://boef.nl/page/safe"]},
-    {name:"Misdaad Loop 2", sites:["https://boef.nl/mis3","https://boef.nl/mis4"]},
-    {name:"Misdaad Loop 3", sites:["https://boef.nl/mis5","https://boef.nl/mis6"]},
-    {name:"Misdaad Loop 4", sites:["https://boef.nl/mis7","https://boef.nl/mis8"]}
-  ],
-  cat4:[
-    {name:"Custom Loop 1", sites:[]}
-  ]
-};
-
-let categoryPopups={}, categoryTimers={}, categoryIndexes={}, bars={}, autoOpenTimers={}, countdownIntervals={};
-
-function showCategory(catId){
-  document.getElementById("loopCategories").style.display="none";
-  const container=document.getElementById("categoryLoops");
-  container.style.display="grid";
-  container.style.gridTemplateColumns="repeat(2,1fr)";
-  container.style.gap="15px";
-  container.innerHTML="";
-  const loopsInCat=categories[catId];
-  loopsInCat.forEach((loop,i)=>{
-    const div=document.createElement("div");
-    div.className="card loop";
-
-    let html=`
-      <div class="input-block">
-        <label>Refresh tijd (sec)</label>
-        <input type="number" id="duration${catId}${i}" value="5" min="1">
-      </div>
-      <button class="start" onclick="startCategoryLoop('${catId}',${i})">Start</button>
-      <button class="stop" onclick="stopCategoryLoop('${catId}',${i})">Stop</button>
-      <div class="barbg"><div class="bar" id="cat${catId}bar${i}"></div></div>
-      <h3>${loop.name}</h3>
-    `;
-
-    if(catId==='cat4'){
-      html=`
-        <div class="input-block">
-          <label>Voer URL in</label>
-          <input type="text" id="customURL${i}" placeholder="https://example.com">
-          <button class="start" onclick="addCustomURL(${i})">Toevoegen</button>
-        </div>
-        <div class="input-block">
-          <label>Open automatisch om (HH:MM:SS)</label>
-          <input type="text" id="autoOpenTime${i}" placeholder="08:30:15">
-          <label>Auto-typ (selector|waarde)</label>
-          <input type="text" id="autoType${i}" placeholder="#idInput|1234">
-          <button class="start" onclick="setAutoOpen(${i})">Instellen</button>
-          <span class="countdown" id="countdown${i}"></span>
-        </div>
-      `+html;
-    }
-
-    div.innerHTML=html;
-    container.appendChild(div);
-    bars[`cat${catId}${i}`]=document.getElementById(`cat${catId}bar${i}`);
+  // ---- Navbar scroll effect ----
+  const nav = document.getElementById('mainNav');
+  window.addEventListener('scroll', () => {
+    nav.classList.toggle('scrolled', window.scrollY > 60);
   });
-}
 
-// Voeg Custom URL toe
-function addCustomURL(i){
-  const url=document.getElementById(`customURL${i}`).value;
-  if(!url) return alert("Voer een URL in!");
-  categories['cat4'][i].sites.push(url);
-  alert("URL toegevoegd!");
-}
-
-// Start/stop loops
-function startCategoryLoop(catId,i){
-  const loop=categories[catId][i];
-  if(!categoryIndexes[`${catId}${i}`]) categoryIndexes[`${catId}${i}`]=0;
-  if(!categoryPopups[`${catId}${i}`] || categoryPopups[`${catId}${i}`].closed){
-    if(loop.sites.length===0) return alert("Geen URL’s ingesteld!");
-    categoryPopups[`${catId}${i}`]=window.open(loop.sites[0],"_blank","width=1200,height=800");
+  // ---- Mobile menu ----
+  function toggleMenu() {
+    const h = document.getElementById('hamburger');
+    const m = document.getElementById('mobileNav');
+    h.classList.toggle('open');
+    m.classList.toggle('open');
+    document.body.style.overflow = m.classList.contains('open') ? 'hidden' : '';
   }
-  let duration=parseInt(document.getElementById(`duration${catId}${i}`).value)*1000;
-  let startTime=Date.now();
-  function rotate(){
-    let elapsed=Date.now()-startTime;
-    let bar=bars[`cat${catId}${i}`];
-    let percent=Math.min((elapsed/duration)*100,100);
-    bar.style.width=percent+"%";
-    if(elapsed>=duration){
-      categoryIndexes[`${catId}${i}`]=(categoryIndexes[`${catId}${i}`]+1)%loop.sites.length;
-      try{categoryPopups[`${catId}${i}`].location.href=loop.sites[categoryIndexes[`${catId}${i}`]];}catch(e){}
-      startTime=Date.now();
-    }
-    categoryTimers[`${catId}${i}`]=requestAnimationFrame(rotate);
+
+  function closeMenu() {
+    document.getElementById('hamburger').classList.remove('open');
+    document.getElementById('mobileNav').classList.remove('open');
+    document.body.style.overflow = '';
   }
-  rotate();
-}
 
-function stopCategoryLoop(catId,i){
-  cancelAnimationFrame(categoryTimers[`${catId}${i}`]);
-  let bar=bars[`cat${catId}${i}`];
-  if(bar) bar.style.width="0%";
-  if(autoOpenTimers[i]) clearTimeout(autoOpenTimers[i]);
-  if(countdownIntervals[i]) clearInterval(countdownIntervals[i]);
-  document.getElementById(`countdown${i}`).innerText="";
-}
-
-// Auto-open met auto-type
-function setAutoOpen(i){
-  const timeInput=document.getElementById(`autoOpenTime${i}`).value;
-  if(!timeInput) return alert("Selecteer een tijd!");
-  const parts=timeInput.split(":").map(Number);
-  if(parts.length!==3) return alert("Gebruik HH:MM:SS");
-  const [hours,minutes,seconds]=parts;
-  const autoTypeInput=document.getElementById(`autoType${i}`).value;
-
-  if(autoOpenTimers[i]) clearTimeout(autoOpenTimers[i]);
-  if(countdownIntervals[i]) clearInterval(countdownIntervals[i]);
-
-  function updateCountdown(){
-    const now=new Date();
-    let target=new Date();
-    target.setHours(hours,minutes,seconds,0);
-    if(target<now) target.setDate(target.getDate()+1);
-    let diff=Math.max(0,Math.floor((target-now)/1000));
-    const h=String(Math.floor(diff/3600)).padStart(2,'0');
-    const m=String(Math.floor((diff%3600)/60)).padStart(2,'0');
-    const s=String(diff%60).padStart(2,'0');
-    document.getElementById(`countdown${i}`).innerText=` (${h}:${m}:${s})`;
-    if(diff<=0){
-      const loop=categories['cat4'][i];
-      if(loop.sites.length>0){
-        const win=window.open(loop.sites[0],"_blank","width=1200,height=800");
-        if(autoTypeInput){
-          try{
-            const [selector,value]=autoTypeInput.split("|");
-            win.onload=()=>{win.document.querySelector(selector).value=value;}
-          }catch(e){}
-        }
+  // ---- Scroll animations ----
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
       }
-      clearInterval(countdownIntervals[i]);
-      document.getElementById(`countdown${i}`).innerText="";
-    }
+    });
+  }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+
+  document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
+
+  // ---- Form submit handler ----
+  function handleSubmit(e) {
+    e.preventDefault();
+    const form = document.getElementById('bookingForm');
+    const success = document.getElementById('formSuccess');
+
+    // Simulate form submission (replace with actual Formspree action)
+    form.style.display = 'none';
+    success.style.display = 'block';
+
+    // Optionally submit to Formspree:
+    // fetch(form.action, { method: 'POST', body: new FormData(form), headers: { 'Accept': 'application/json' }});
   }
 
-  updateCountdown();
-  countdownIntervals[i]=setInterval(updateCountdown,1000);
-  alert(`Auto open ingesteld om ${hours.toString().padStart(2,'0')}:${minutes.toString().padStart(2,'0')}:${seconds.toString().padStart(2,'0')}`);
-}
+  // ---- Set min date for date picker ----
+  const dateInput = document.getElementById('datum');
+  if (dateInput) {
+    const today = new Date().toISOString().split('T')[0];
+    dateInput.setAttribute('min', today);
+  }
 
-// Grafiek voorbeeld
-const ctx=document.getElementById('statsChart').getContext('2d');
-const chart=new Chart(ctx,{
-  type:'bar',
-  data:{
-    labels:['Loops actief','Rpm','Windows open'],
-    datasets:[{
-      label:'Statistieken',
-      data:[0,0,0],
-      backgroundColor:['#22c55e','#0ff','#ef4444']
-    }]
-  },
-  options:{responsive:true,plugins:{legend:{display:false}},scales:{y:{beginAtZero:true}}}
-});
+  // ---- Active nav link on scroll ----
+  const sections = document.querySelectorAll('section[id], div[id]');
+  const navLinks = document.querySelectorAll('.nav-links a');
+
+  window.addEventListener('scroll', () => {
+    let current = '';
+    sections.forEach(section => {
+      const sectionTop = section.offsetTop - 100;
+      if (window.scrollY >= sectionTop) {
+        current = section.getAttribute('id');
+      }
+    });
+    navLinks.forEach(link => {
+      link.style.color = '';
+      if (link.getAttribute('href') === '#' + current) {
+        link.style.color = 'var(--gold)';
+      }
+    });
+  });
 </script>
+
 </body>
 </html>
